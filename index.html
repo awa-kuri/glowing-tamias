@@ -64,7 +64,7 @@ img{-webkit-user-drag:none;user-select:none}
 .sec{padding:16px 16px 4px;font-size:13px;font-weight:700;color:var(--ai);letter-spacing:.1em}
 .sec.k{color:var(--karashi)} .sec.s{color:var(--sabi)}
 .cats{display:flex;position:relative;margin:14px 16px 2px;border:1.5px solid var(--ai);border-radius:10px;overflow:hidden}
-.cats .ind{position:absolute;top:0;bottom:0;left:0;width:33.3334%;background:var(--ai);transform:translateX(calc(var(--i) * 100%));transition:transform .26s cubic-bezier(.3,.7,.2,1)}
+.cats .ind{position:absolute;top:0;bottom:0;left:0;width:calc(33.3334% + 2px);margin-left:-1px;background:var(--ai);transform:translateX(calc(var(--i) * (100% - 2px)));transition:transform .26s cubic-bezier(.3,.7,.2,1)}
 .cats button{flex:1;position:relative;z-index:1;text-align:center;font-size:13.5px;padding:7px 0;color:var(--ai);font-weight:500;transition:color .2s}
 .cats button.on{color:var(--ground)}
 .crow{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:5px 10px;padding:10px 16px 8px;border-bottom:1px solid var(--rule)}
