@@ -308,7 +308,7 @@ const IMG = {
   carry:'img/squirrel_carry.png', face:'img/squirrel_face.png',
   nut:'img/icon.png', hollow:'img/icon-empty.png',
   burrClosed:'img/chestnut%20burr2.png', burrOpen:'img/chestnut%20burr1.png',
-  basket:'img/basket.png', leaf:'img/leaf.png', three:'img/three%20chestnuts.png',
+  basket:'img/basket.png', book:'img/book.png', leaf:'img/leaf.png', three:'img/three%20chestnuts.png',
   line1:'img/line1.png', line2:'img/line2.png', burrs:'img/chestnut%20burrs.png'
 };
 const CATS = ['supp','daily','food'];
@@ -579,7 +579,7 @@ function tabsHtml(){
   const on = view.name === 'memo' || (view.name === 'item' && view.from === 'memo') ? 'memo'
            : (view.name === 'care' || view.name === 'edit') ? 'care' : 'shelf';
   const b = (k, img, label) => `<button class="${on === k ? 'on' : ''}" data-act="tab" data-v="${k}"><img src="${img}" alt="">${label}</button>`;
-  return `<nav class="tabs"><div class="in">${b('shelf', IMG.nut, '棚')}${b('memo', IMG.basket, '覚え書き')}${b('care', IMG.leaf, '手入れ')}</div></nav>`;
+  return `<nav class="tabs"><div class="in">${b('shelf', IMG.nut, '棚')}${b('memo', IMG.book, '覚え書き')}${b('care', IMG.leaf, '手入れ')}</div></nav>`;
 }
 function stockHtml(n){
   if (n <= 0) return `<span class="stock"><img src="${IMG.hollow}" alt="予備なし"></span>`;

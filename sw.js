@@ -1,5 +1,5 @@
 // 栗鼠の帳：帳面・字体・絵を端末に保存し、二度目からは端末の中で開く
-const CACHE = 'risu-cho-v4';
+const CACHE = 'risu-cho-v5';
 const CORE = [
   './', './index.html', './manifest.json', './icon-192.png', './icon-512.png',
   './img/squirrel_full.png', './img/squirrel_last.png', './img/squirrel_empty.png',
@@ -7,7 +7,7 @@ const CORE = [
   './img/icon.png', './img/icon-empty.png',
   './img/chestnut%20burr1.png', './img/chestnut%20burr2.png', './img/chestnut%20burrs.png',
   './img/basket.png', './img/leaf.png', './img/three%20chestnuts.png',
-  './img/line1.png', './img/line2.png'
+  './img/line1.png', './img/line2.png', './img/book.png'
 ];
 const FONT_HOSTS = ['fonts.googleapis.com', 'fonts.gstatic.com'];
 
