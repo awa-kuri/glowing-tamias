@@ -1,5 +1,5 @@
 // 栗鼠の帳：帳面・字体・絵を端末に保存し、二度目からは端末の中で開く
-const CACHE = 'risu-cho-v2';
+const CACHE = 'risu-cho-v3';
 const CORE = [
   './', './index.html', './manifest.json', './icon-192.png', './icon-512.png',
   './img/squirrel_full.png', './img/squirrel_last.png', './img/squirrel_empty.png',
@@ -28,8 +28,9 @@ self.addEventListener('fetch', e => {
   const isFont = FONT_HOSTS.includes(url.hostname);
   if (url.origin !== self.location.origin && !isFont) return;
 
-  if (isFont) {
-    // 字体は一度取れば変わらない：端末にあればそれを使う
+  const isImg = url.origin === self.location.origin && /\.png$/i.test(url.pathname);
+  if (isFont || isImg) {
+    // 字体と絵は一度取れば変わらない：端末にあればそれを使い、取りに行かない
     e.respondWith(caches.open(CACHE).then(async cache => {
       const hit = await cache.match(req);
       if (hit) return hit;
@@ -44,7 +45,7 @@ self.addEventListener('fetch', e => {
     return;
   }
 
-  // 帳面と絵：端末の写しをすぐ出し、裏で新しいものに取り替えておく
+  // 帳面：端末の写しをすぐ出し、裏で新しいものに取り替えておく
   e.respondWith(caches.open(CACHE).then(async cache => {
     const hit = await cache.match(req, { ignoreSearch: true });
     const net = fetch(req, { cache: 'no-cache' }).then(res => {

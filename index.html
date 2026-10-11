@@ -27,18 +27,19 @@
 :root.standalone{ --top-gap:30px; }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:var(--ground)}
+html{touch-action:manipulation}
 body{font-family:"Zen Maru Gothic","Hiragino Maru Gothic ProN","Hiragino Sans",sans-serif;color:var(--kuri);-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
 button{font:inherit;color:inherit;background:none;border:none;cursor:pointer;touch-action:manipulation}
 [role=button]{cursor:pointer;touch-action:manipulation}
 input,select,textarea{font-family:inherit;font-size:16px;color:var(--ai)}
 img{-webkit-user-drag:none;user-select:none}
-.app{max-width:420px;margin:0 auto;min-height:100vh;padding-top:calc(var(--safe-t) + var(--top-gap));padding-bottom:calc(var(--tabs-h) + var(--safe-b) + 16px)}
+.app{max-width:420px;margin:0 auto;min-height:100vh;overflow-x:clip;padding-top:calc(var(--safe-t) + var(--top-gap));padding-bottom:calc(var(--tabs-h) + var(--safe-b) + 16px)}
 
 /* 画面の切り替え */
-.page{animation:pg-fade .22s ease-out both}
-.page.fwd{animation-name:pg-fwd}
-.page.back{animation-name:pg-back}
-@keyframes pg-fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.page{animation:pg-fade .45s ease-out both}
+.page.nav-fwd{animation:pg-fwd .3s ease-out both}
+.page.nav-back{animation:pg-back .3s ease-out both}
+@keyframes pg-fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 @keyframes pg-fwd{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
 @keyframes pg-back{from{opacity:0;transform:translateX(-24px)}to{opacity:1;transform:none}}
 .list{animation:ls-r .22s ease-out both}
@@ -139,9 +140,11 @@ details.fd[open]>summary .v::after{content:" ⌄"}
 .li a{color:var(--ai);font-size:12.5px;white-space:nowrap}
 
 /* 板 */
-.scrim{position:fixed;inset:0;background:rgba(36,49,115,.35);z-index:40;animation:fade .2s}
-.scrim.out{animation:fadeout .2s forwards;pointer-events:none}
-.sheet{position:fixed;left:0;right:0;bottom:0;z-index:41;max-width:420px;margin:0 auto;background:var(--ground);border-radius:22px 22px 0 0;padding:18px 20px calc(22px + var(--safe-b));box-shadow:0 -4px 16px rgba(0,0,0,.15);max-height:88vh;overflow:auto;animation:sheet-in .26s cubic-bezier(.2,.8,.2,1)}
+.scrim{position:fixed;inset:0;background:transparent;-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);z-index:40;animation:veil-in .26s ease-out}
+.scrim.out{animation:veil-out .22s ease-in forwards;pointer-events:none}
+@keyframes veil-in{from{-webkit-backdrop-filter:blur(0);backdrop-filter:blur(0)}to{-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}}
+@keyframes veil-out{from{-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}to{-webkit-backdrop-filter:blur(0);backdrop-filter:blur(0)}}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:41;max-width:420px;margin:0 auto;background:var(--ground);border-radius:22px 22px 0 0;padding:18px 20px calc(22px + var(--safe-b));box-shadow:0 -6px 26px rgba(70,40,20,.24);max-height:88vh;overflow:auto;animation:sheet-in .26s cubic-bezier(.2,.8,.2,1)}
 .sheet.out{animation:sheet-out .2s ease-in forwards;pointer-events:none}
 @keyframes sheet-in{from{transform:translateY(100%)}to{transform:none}}
 @keyframes sheet-out{from{transform:none}to{transform:translateY(100%)}}
@@ -176,13 +179,14 @@ details.fd[open]>summary .v::after{content:" ⌄"}
 /* 中央寄せは横幅いっぱいの枠で行う（iPhoneで割合の移動がずれるのを避ける） */
 .undo-wrap,.carry-wrap{position:fixed;left:0;right:0;display:flex;justify-content:center;pointer-events:none}
 .undo-wrap{bottom:calc(var(--tabs-h) + var(--safe-b) + 12px);z-index:30}
-.undo{pointer-events:auto;background:var(--ai);color:var(--ground);border-radius:12px;padding:10px 8px 10px 18px;display:flex;align-items:center;gap:14px;font-size:14px;box-shadow:0 4px 14px rgba(36,49,115,.3);animation:undo-in .2s ease-out;white-space:nowrap}
-.undo-wrap.out .undo{animation:fadeout .2s forwards}
+.undo{pointer-events:auto;background:var(--ai);color:var(--ground);border-radius:12px;padding:10px 8px 10px 18px;display:flex;align-items:center;gap:14px;font-size:14px;box-shadow:0 4px 14px rgba(36,49,115,.3);animation:undo-in .4s ease-out;white-space:nowrap}
+.undo-wrap.out .undo{animation:fadeout .4s ease-in forwards}
 @keyframes undo-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 .undo button{color:var(--kinari);font-weight:700;padding:4px 12px;border-left:1px solid rgba(239,226,199,.35)}
 /* 抱えて帰る栗鼠は、取り消しの帯（藍）に重ならない高さに出す */
-.carry-wrap{bottom:calc(var(--tabs-h) + var(--safe-b) + 80px);z-index:35}
-.carry{height:92px;width:90px;animation:carry 1.2s ease-in-out forwards}
+.carry-wrap{bottom:calc(var(--tabs-h) + var(--safe-b) + 64px);z-index:35}
+.carry{width:150px;height:128px;display:flex;align-items:center;justify-content:center;background:radial-gradient(closest-side,rgba(239,226,199,1) 68%,rgba(239,226,199,0) 100%);animation:carry 1.2s ease-in-out forwards}
+.carry img{height:92px;width:90px}
 @keyframes carry{0%{opacity:0;transform:translateY(14px)}25%{opacity:1;transform:none}70%{opacity:1;transform:translateY(-4px)}100%{opacity:0;transform:translateY(-14px)}}
 @keyframes fade{from{opacity:0}to{opacity:1}}
 @keyframes fadeout{from{opacity:1}to{opacity:0}}
@@ -258,8 +262,8 @@ details.fd[open]>summary .v::after{content:" ⌄"}
 .danger button.del2{border-color:var(--sabi);color:var(--sabi)}
 
 /* 説明の頁 */
-.cover{position:fixed;inset:0;z-index:50;background:var(--ground);overflow-y:auto;-webkit-overflow-scrolling:touch;animation:fade .2s}
-.cover.out{animation:fadeout .18s forwards;pointer-events:none}
+.cover{position:fixed;inset:0;z-index:50;background:var(--ground);overflow-y:auto;-webkit-overflow-scrolling:touch;animation:fade .4s ease-out}
+.cover.out{animation:fadeout .35s ease-in forwards;pointer-events:none}
 .cover .in{max-width:420px;margin:0 auto;padding-bottom:calc(30px + var(--safe-b))}
 .tabsx{display:flex;gap:16px;align-items:center;padding:calc(var(--safe-t) + var(--top-gap) + 14px) 16px 8px;font-size:14px;color:var(--ai);position:sticky;top:0;background:var(--ground);z-index:2;border-bottom:1px solid var(--rule)}
 .tabsx button{opacity:.6;padding-bottom:3px;border-bottom:2px solid transparent;color:var(--ai)}
@@ -486,7 +490,7 @@ function showUndo(before){
 function hideUndo(){
   clearTimeout(undoTimer); undoSnap = null;
   const el = document.getElementById('undo'); if (!el) return;
-  el.id = ''; el.classList.add('out'); setTimeout(() => el.remove(), 220);
+  el.id = ''; el.classList.add('out'); setTimeout(() => el.remove(), 430);
 }
 function doUndo(){
   if (!undoSnap) return;
@@ -496,11 +500,12 @@ function doUndo(){
   if (view.name === 'edit' && view.slotId && !slotById(view.slotId)) view = {name:'care'};
   render();
 }
-const carryImg = new Image(); carryImg.src = IMG.carry;   // 先に読んでおく
+// 絵は初めに全部読み、描ける形にしておく（切り替えのたびに一瞬消えるのを防ぐ）
+const imgKeep = Object.values(IMG).map(src => { const im = new Image(); im.decoding = 'sync'; im.src = src; if (im.decode) im.decode().catch(() => {}); return im; });
 function showCarry(){
   const wrap = document.createElement('div');
   wrap.className = 'carry-wrap';
-  wrap.innerHTML = `<img class="carry" src="${IMG.carry}" alt="">`;
+  wrap.innerHTML = `<div class="carry"><img decoding="sync" src="${IMG.carry}" alt=""></div>`;
   document.body.appendChild(wrap);
   setTimeout(() => wrap.remove(), 1250);
 }
@@ -521,14 +526,14 @@ function render(){
   else if (view.name === 'item') h = viewItem();
   else if (view.name === 'edit') h = viewEdit();
   const key = view.name + ':' + (view.slotId || '');
-  morph(document.getElementById('app'), `<div class="page ${navDir}" data-k="${esc(key)}">${h}</div>` + tabsHtml());
+  morph(document.getElementById('app'), `<div class="page nav-${navDir}" data-k="${esc(key)}">${h}</div>` + tabsHtml());
 }
 
 /* 描き直しは差分だけ：変わらない絵や文字はそのまま残す（ちらつき防止）。
    data-k が違う要素は作り直す（＝新しく入る動きが出る） */
 function morph(target, html){
   const tpl = document.createElement('template');
-  tpl.innerHTML = html;
+  tpl.innerHTML = html.replace(/<img /g, '<img decoding="sync" ');
   patchChildren(target, tpl.content);
 }
 function sameKind(a, b){
@@ -970,7 +975,7 @@ function leave(...els){
     if (!el) continue;
     el.classList.add('out');
     document.body.appendChild(el);
-    setTimeout(() => el.remove(), 230);
+    setTimeout(() => el.remove(), el.classList.contains('cover') ? 380 : 240);
   }
 }
 function confirmSheet(text, yes, onYes, warn, no){ sheet = {kind:'confirm', text, yes, warn, no}; confirmFn = onYes; renderLayer(); }
