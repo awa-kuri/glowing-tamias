@@ -771,7 +771,7 @@ function viewMemo(){
   const picked = memoShop === 'all' ? null : [...sections, none].find(s => secKey(s) === memoShop);
   const sub = picked ? esc(picked.shop ? picked.shop.name : '店未定') + 'で買うもの' : '店ごとに、買うものを並べる';
   let h = `<img class="band2" src="${IMG.line2}" alt="">
-  <div class="hd"><img src="${IMG.basket}" alt=""><div><h1>覚え書き</h1><p>${sub}</p></div></div>`;
+  <div class="hd"><img src="${IMG.empty}" alt=""><div><h1>覚え書き</h1><p>${sub}</p></div></div>`;
   if (!all.length) return h + `<div class="allgood"><img src="${IMG.full}" alt=""><p>買い足すものはない。</p></div>` + foot();
   // 店の札：載るものがある店だけ（選んでいる店は空になっても残す）
   const chipSecs = [...sections, none].filter(s => s.rows.length || secKey(s) === memoShop);
