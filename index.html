@@ -1,0 +1,1188 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#EFE2C7">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="栗鼠の帳">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>栗鼠の帳</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ground:#EFE2C7; --ai:#243173; --kuri:#813F23; --kuri-soft:rgba(129,63,35,.55);
+  --rule:rgba(129,63,35,.22); --koke:#685F33; --karashi:#D7983B; --sabi:#C1582D; --kinari:#E9D4B0;
+  --tabs-h:58px; --safe-b:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--ground)}
+body{font-family:"Zen Maru Gothic","Hiragino Maru Gothic ProN","Hiragino Sans",sans-serif;color:var(--kuri);-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer;touch-action:manipulation}
+[role=button]{cursor:pointer;touch-action:manipulation}
+input,select,textarea{font-family:inherit;font-size:16px;color:var(--ai)}
+img{-webkit-user-drag:none;user-select:none}
+.app{max-width:420px;margin:0 auto;min-height:100vh;padding-top:env(safe-area-inset-top,0px);padding-bottom:calc(var(--tabs-h) + var(--safe-b) + 16px)}
+
+/* 帯と題字 */
+.band{display:block;width:100%;height:auto}
+.band2{display:block;width:100%;height:46px;object-fit:cover;object-position:center}
+.title{display:flex;align-items:center;justify-content:space-between;padding:12px 16px 4px}
+.title h1{font-size:22px;color:var(--ai);font-weight:700;letter-spacing:.08em}
+.face{width:40px;height:40px;border-radius:50%;border:1.5px solid var(--rule);display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.face img{height:30px}
+.keeper{display:flex;align-items:center;gap:10px;padding:4px 16px 10px;border-bottom:1px solid var(--rule)}
+.keeper img{height:92px;flex-shrink:0}
+.keeper p{font-size:14px;line-height:1.75}
+.keeper em{font-style:normal;font-weight:700}
+.keeper em.k{color:var(--karashi)} .keeper em.s{color:var(--sabi)}
+
+/* 棚 */
+.sec{padding:16px 16px 4px;font-size:13px;font-weight:700;color:var(--ai);letter-spacing:.1em}
+.sec.k{color:var(--karashi)} .sec.s{color:var(--sabi)}
+.cats{display:flex;margin:14px 16px 2px;border:1.5px solid var(--ai);border-radius:10px;overflow:hidden}
+.cats button{flex:1;text-align:center;font-size:13.5px;padding:7px 0;color:var(--ai);font-weight:500}
+.cats button.on{background:var(--ai);color:var(--ground)}
+.crow{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:5px 10px;padding:10px 16px 8px;border-bottom:1px solid var(--rule)}
+.crow .cn{font-size:15px;font-weight:500;min-width:0;line-height:1.4}
+.sub{font-size:11px;color:var(--kuri-soft);margin-left:6px;font-weight:400}
+.mark{display:inline-block;font-size:10.5px;border:1px solid var(--kuri-soft);color:var(--kuri-soft);border-radius:3px;padding:0 4px;margin-left:6px;vertical-align:1px;font-weight:400;white-space:nowrap;line-height:1.5}
+.cd{font-size:12.5px;color:var(--kuri-soft);text-align:right;display:flex;align-items:center;gap:4px;justify-content:flex-end;white-space:nowrap}
+.cd img{height:16px;width:16px;object-fit:contain}
+.stock{display:flex;gap:2px;align-items:center;font-size:11.5px;color:var(--kuri-soft);min-width:18px;justify-content:flex-end}
+.stock img{height:18px;width:18px;object-fit:contain}
+.thin{grid-column:1/-1;height:3px;background:rgba(129,63,35,.10);border-radius:2px;overflow:hidden}
+.thin div{height:100%;background:var(--kuri-soft);border-radius:2px}
+.st-k .cd{color:var(--karashi);font-weight:700} .st-k .thin div{background:var(--karashi)}
+.st-s .cd{color:var(--sabi);font-weight:700} .st-s .thin div{background:var(--sabi)}
+.muted .cn{color:var(--kuri-soft);font-weight:400}
+.ask{font-size:11px;color:var(--ai);border:1px solid var(--ai);border-radius:10px;padding:1px 7px;margin-right:2px;font-weight:500;white-space:nowrap}
+.foot{text-align:center;padding:22px 0 8px} .foot img{height:44px;opacity:.9}
+.empty-note{padding:16px;font-size:13px;color:var(--kuri-soft);line-height:1.8}
+
+/* 下の札 */
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--ground);border-top:1px solid var(--rule);padding-bottom:var(--safe-b)}
+.tabs .in{max-width:420px;margin:0 auto;display:flex;height:var(--tabs-h)}
+.tabs button{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11px;color:var(--kuri-soft);gap:2px}
+.tabs img{height:22px;opacity:.75}
+.tabs button.on{color:var(--ai);font-weight:700}
+.tabs button.on img{opacity:1}
+
+/* 品の頁 */
+.back{display:inline-block;padding:14px 16px 2px;font-size:14px;color:var(--ai)}
+.item-h{padding:6px 16px 12px;border-bottom:1px solid var(--rule)}
+.item-h h2{font-size:22px;color:var(--ai);letter-spacing:.06em;line-height:1.4}
+.item-h .pd{font-size:12.5px;color:var(--kuri-soft);margin-top:2px;line-height:1.6}
+.tag{display:inline-block;margin-top:7px;font-size:11px;border-radius:3px;padding:1px 7px;line-height:1.6}
+.tag.keep{color:var(--ground);background:var(--koke)}
+.tag.bridge{color:var(--kuri);border:1px solid var(--kuri-soft)}
+.item-h .mark{margin-left:6px;vertical-align:0}
+.btns{display:flex;justify-content:space-between;gap:8px;padding:16px 16px 10px}
+.btn{flex:1;border:1.5px solid var(--kuri);border-radius:14px;text-align:center;padding:10px 0 8px;font-size:14px;font-weight:700;background:rgba(255,255,255,.18)}
+.btn img{height:46px;width:46px;object-fit:contain;display:block;margin:0 auto 4px}
+.btn:active{background:rgba(129,63,35,.08)}
+.units{padding:2px 16px 6px}
+.unit{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13.5px;padding:8px 0;border-bottom:1px dashed var(--rule)}
+.unit .r{color:var(--kuri-soft);display:flex;align-items:center;gap:4px;white-space:nowrap}
+.unit .r img{height:15px}
+.unit.st-k .r{color:var(--karashi);font-weight:700} .unit.st-s .r{color:var(--sabi);font-weight:700}
+.facts{display:flex;padding:12px 16px 10px;gap:10px}
+.fact{flex:1;text-align:center}
+.fact b{display:block;font-size:22px;color:var(--ai);font-weight:700;line-height:1.3}
+.fact span{font-size:11px;color:var(--kuri-soft);display:block;line-height:1.5}
+.fact small{font-size:10.5px;color:var(--kuri-soft);display:block}
+.fold{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-top:1px solid var(--rule);font-size:14px;width:100%;text-align:left}
+.fold .v{color:var(--kuri-soft);font-size:12.5px}
+.pin{background:rgba(36,49,115,.05)}
+.sw{display:inline-block;width:42px;height:24px;border-radius:12px;background:rgba(129,63,35,.25);position:relative;flex-shrink:0;transition:background .15s}
+.sw i{position:absolute;left:3px;top:3px;width:18px;height:18px;border-radius:50%;background:var(--ground);transition:left .15s}
+.sw.on{background:var(--ai)} .sw.on i{left:21px}
+details.fd{border-top:1px solid var(--rule)}
+details.fd>summary{list-style:none;display:flex;justify-content:space-between;align-items:center;padding:12px 16px;font-size:14px;cursor:pointer}
+details.fd>summary::-webkit-details-marker{display:none}
+details.fd>summary .v{color:var(--kuri-soft);font-size:12.5px;text-align:right;max-width:60%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+details.fd>summary .v::after{content:" ›";}
+details.fd[open]>summary .v::after{content:" ⌄"}
+.fbody{padding:0 16px 12px}
+.hrow{padding:9px 0;border-bottom:1px dashed var(--rule);font-size:13px;line-height:1.6}
+.hrow .hl b{color:var(--ai);font-weight:700;margin-right:6px}
+.hrow .hr{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:4px}
+.hrow input[type=date]{font-size:14px;border:1px solid var(--rule);border-radius:8px;padding:3px 6px;background:rgba(255,255,255,.3);min-height:32px}
+.del{font-size:12.5px;color:var(--sabi);padding:4px 8px}
+.plain{font-size:13px;line-height:1.8;padding:4px 0}
+.plain a{color:var(--ai)}
+.li{display:flex;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:1px dashed var(--rule);font-size:13.5px}
+.li .v{color:var(--kuri-soft);font-size:12px;white-space:nowrap}
+.li a{color:var(--ai);font-size:12.5px;white-space:nowrap}
+
+/* 板 */
+.scrim{position:fixed;inset:0;background:rgba(36,49,115,.35);z-index:40;animation:fade .15s}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:41;max-width:420px;margin:0 auto;background:var(--ground);border-radius:22px 22px 0 0;padding:18px 20px calc(22px + var(--safe-b));box-shadow:0 -4px 16px rgba(0,0,0,.15);max-height:88vh;overflow:auto;animation:up .18s ease-out}
+.sheet h3{font-size:16px;color:var(--ai);margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.sheet h3 img{height:34px;width:34px;object-fit:contain}
+.sheet h3 .x{margin-left:auto;font-size:20px;color:var(--kuri-soft);padding:0 4px}
+.sheet p{font-size:13.5px;line-height:1.8;margin:12px 0 8px}
+.sheet .note{font-size:11.5px;color:var(--kuri-soft);margin-top:10px;line-height:1.7}
+.field{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--rule);font-size:13.5px;min-height:48px}
+.field>span:first-child{flex-shrink:0}
+.field select,.field input[type=date],.field input[type=text],.field input[type=number]{border:none;background:transparent;color:var(--ai);font-weight:500;text-align:right;min-width:0;max-width:72%;padding:4px 0}
+.field select{text-align-last:right;-webkit-appearance:none;appearance:none;padding-right:14px;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0 0l5 6 5-6z' fill='%23243173'/></svg>") no-repeat right center}
+.field input[type=text],.field input[type=number]{border-bottom:1px dashed var(--rule)}
+.stepper{display:flex;align-items:center;gap:6px}
+.stepper button{width:36px;height:36px;border-radius:50%;border:1.5px solid var(--kuri-soft);font-size:18px;color:var(--ai);line-height:1}
+.stepper b{min-width:28px;text-align:center;font-size:17px;color:var(--ai)}
+.seg{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.seg button{font-size:13px;padding:5px 11px;border-radius:14px;border:1px solid var(--kuri-soft);color:var(--kuri)}
+.seg button.on{background:var(--kuri);color:var(--ground);border-color:var(--kuri)}
+.choice{display:flex;gap:8px;margin-top:14px}
+.choice button{flex:1;text-align:center;padding:12px 0;border-radius:10px;font-size:14px;font-weight:700;border:1.5px solid var(--kuri)}
+.choice button.main{background:var(--ai);color:var(--ground);border-color:var(--ai)}
+.choice button.warn{background:var(--sabi);color:#fff;border-color:var(--sabi)}
+.choice button:disabled{opacity:.4}
+.pick{display:flex;flex-direction:column;gap:6px;margin:6px 0 2px}
+.pick button{text-align:left;padding:9px 12px;border-radius:10px;border:1px solid var(--kuri-soft);font-size:13.5px}
+.pick button.on{border:1.5px solid var(--ai);color:var(--ai);font-weight:700;background:rgba(36,49,115,.06)}
+.newp{background:rgba(255,255,255,.22);border-radius:10px;padding:2px 10px;margin-top:6px}
+.err{color:var(--sabi);font-size:12.5px;margin-top:8px}
+
+/* 取り消しの帯・抱えて帰る栗鼠 */
+.undo{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--tabs-h) + var(--safe-b) + 12px);z-index:30;background:var(--ai);color:var(--ground);border-radius:12px;padding:10px 8px 10px 18px;display:flex;align-items:center;gap:14px;font-size:14px;box-shadow:0 4px 14px rgba(36,49,115,.3);animation:up .18s ease-out;white-space:nowrap}
+.undo button{color:var(--kinari);font-weight:700;padding:4px 12px;border-left:1px solid rgba(239,226,199,.35)}
+.carry{position:fixed;left:50%;bottom:calc(var(--tabs-h) + var(--safe-b) + 40px);height:92px;z-index:35;pointer-events:none;transform:translateX(-50%);animation:carry 1.2s ease-in-out forwards}
+@keyframes carry{0%{opacity:0;transform:translate(-50%,14px)}25%{opacity:1;transform:translate(-50%,0)}70%{opacity:1;transform:translate(-50%,-4px)}100%{opacity:0;transform:translate(-50%,-14px)}}
+@keyframes up{from{transform:translateY(16px);opacity:.4}to{transform:none;opacity:1}}
+.undo{animation:none}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+
+/* 覚え書き */
+.hd{display:flex;align-items:center;gap:10px;padding:8px 16px 6px}
+.hd img{height:62px;flex-shrink:0}
+.hd h1{font-size:20px;color:var(--ai);letter-spacing:.08em}
+.hd p{font-size:12px;color:var(--kuri-soft);margin-top:2px}
+.shop{padding:12px 16px 4px;display:flex;justify-content:space-between;align-items:baseline;gap:8px;border-top:2px solid var(--ai);margin-top:10px}
+.shop b{font-size:15px;color:var(--ai);letter-spacing:.06em}
+.shop span{font-size:11.5px;color:var(--kuri-soft);white-space:nowrap}
+.mrow{display:grid;grid-template-columns:1fr auto minmax(64px,34%);align-items:center;gap:8px;padding:8px 16px;border-bottom:1px dashed var(--rule)}
+.mrow .mn{font-size:14.5px;font-weight:500;line-height:1.45}
+.mrow .mp,.mrow .mm{font-size:11px;color:var(--kuri-soft);line-height:1.5}
+.mrow .mm{color:var(--koke)}
+.mrow .mp{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.mrow .md{font-size:11.5px;color:var(--kuri-soft);text-align:right;line-height:1.5}
+.mrow.q .mn{color:var(--kuri-soft);font-weight:400}
+.bd{display:inline-block;font-size:10.5px;padding:1px 7px;border-radius:9px;font-weight:700;white-space:nowrap}
+.b-k{background:var(--karashi);color:#fff}
+.b-n{background:var(--ai);color:var(--ground)}
+.b-z{background:transparent;color:var(--kuri);border:1px solid var(--kuri-soft);font-weight:500}
+.allgood{text-align:center;padding:30px 16px 10px}
+.allgood img{height:92px}
+.allgood p{font-size:14px;margin-top:8px}
+
+/* 手入れ */
+.tier{padding:10px 16px 2px;font-size:11px;color:var(--ai);letter-spacing:.15em;font-weight:700}
+.crow2{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--rule);font-size:14.5px}
+.crow2 .v{font-size:11.5px;color:var(--kuri-soft);text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:55%}
+.wide{display:block;width:calc(100% - 32px);margin:12px 16px 4px;padding:11px 0;border-radius:10px;border:1.5px solid var(--ai);color:var(--ai);font-weight:700;font-size:14px;text-align:center}
+.wide.main{background:var(--ai);color:var(--ground)}
+.srow{display:grid;grid-template-columns:1fr 64px auto;align-items:center;gap:8px;padding:8px 16px;border-bottom:1px solid var(--rule)}
+.srow input{border:none;border-bottom:1px dashed var(--rule);background:transparent;padding:4px 0;width:100%;min-width:0}
+.srow .ld{display:flex;align-items:center;gap:2px;font-size:12px;color:var(--kuri-soft)}
+.srow .ld input{text-align:right;width:36px}
+.srow .ops{display:flex;gap:2px}
+.srow .ops button{font-size:13px;color:var(--ai);padding:4px 6px}
+.srow .ops button:disabled{opacity:.25}
+.srow .ops .del{color:var(--sabi)}
+.small{font-size:11.5px;color:var(--kuri-soft);padding:6px 16px;line-height:1.7}
+.seed{margin:10px 16px 4px;padding:12px 14px;border:1.5px dashed var(--ai);border-radius:12px}
+.seed p{font-size:13px;line-height:1.8}
+
+/* 持ち場を編む */
+.form{padding:2px 16px}
+.form .field{flex-wrap:wrap;gap:6px;min-height:0;padding:10px 0}
+.form .k{font-size:12.5px;color:var(--kuri-soft);width:100%}
+.form input[type=text],.form input[type=number],.form input[type=url],.form textarea{width:100%;border:none;border-bottom:1px dashed var(--rule);background:transparent;padding:5px 0;color:var(--ai);font-weight:500}
+.form textarea{border:1px dashed var(--rule);border-radius:8px;padding:6px 8px;min-height:60px;resize:vertical}
+.form .seg{justify-content:flex-start}
+.form .field input[type=text],.form .field input[type=number],.form .field input[type=url]{max-width:none;text-align:left}
+.chips{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.chips button,.chips span.chip{font-size:12.5px;border:1px solid var(--kuri-soft);border-radius:14px;padding:4px 10px;color:var(--kuri)}
+.chips button.sel{border-color:var(--ai);color:var(--ai);font-weight:500;background:rgba(36,49,115,.06)}
+.chips button.home{background:var(--ai);color:var(--ground);border-color:var(--ai)}
+.chips span.chip b{margin-left:6px;color:var(--sabi);font-weight:700;cursor:pointer}
+.addrow{display:flex;gap:6px;width:100%;margin-top:4px}
+.addrow input{flex:1}
+.addrow button{font-size:13px;color:var(--ai);border:1px solid var(--ai);border-radius:12px;padding:3px 12px;white-space:nowrap}
+.homesel{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--kuri-soft);margin-top:6px;width:100%}
+.homesel select{flex:1;border:none;border-bottom:1px dashed var(--rule);background:transparent;padding:4px 0;color:var(--ai);font-weight:500}
+.pbox{width:100%;border:1px solid var(--rule);border-radius:10px;padding:6px 10px 8px;margin-top:6px;background:rgba(255,255,255,.18)}
+.pbox .pl{display:flex;gap:8px;align-items:center;margin-top:4px}
+.pbox .pl label{font-size:11.5px;color:var(--kuri-soft);white-space:nowrap}
+.pbox .pl input{flex:1}
+.pbox .pt{display:flex;justify-content:space-between;align-items:center;margin-top:6px}
+.pbox .cur{font-size:12px;border:1px solid var(--kuri-soft);border-radius:12px;padding:2px 10px;color:var(--kuri)}
+.pbox .cur.on{background:var(--koke);color:var(--ground);border-color:var(--koke)}
+.danger{display:flex;gap:8px;padding:6px 16px 0}
+.danger button{flex:1;padding:10px 0;border-radius:10px;border:1.5px solid var(--kuri-soft);font-size:13.5px}
+.danger button.del2{border-color:var(--sabi);color:var(--sabi)}
+
+/* 説明の頁 */
+.cover{position:fixed;inset:0;z-index:50;background:var(--ground);overflow-y:auto;-webkit-overflow-scrolling:touch;animation:fade .15s}
+.cover .in{max-width:420px;margin:0 auto;padding-top:env(safe-area-inset-top,0px);padding-bottom:calc(30px + var(--safe-b))}
+.tabsx{display:flex;gap:16px;align-items:center;padding:14px 16px 8px;font-size:14px;color:var(--ai);position:sticky;top:0;background:var(--ground);z-index:2;border-bottom:1px solid var(--rule)}
+.tabsx button{opacity:.6;padding-bottom:3px;border-bottom:2px solid transparent;color:var(--ai)}
+.tabsx button.on{opacity:1;border-bottom-color:currentColor;font-weight:700}
+.tabsx .x{margin-left:auto;opacity:.85;font-size:22px;border:none;padding:0 4px}
+.how{padding:4px 20px}
+.how h4{font-size:14.5px;color:var(--ai);margin:18px 0 6px;padding-left:8px;border-left:3px solid var(--karashi)}
+.how p{font-size:13.5px;line-height:1.85}
+.how b{color:var(--ai)}
+.howbtn{display:flex;align-items:center;gap:10px;margin:8px 0}
+.howbtn img{height:38px;width:38px;object-fit:contain;flex-shrink:0}
+.howrow{display:flex;align-items:center;gap:6px;margin:4px 0 6px;flex-wrap:wrap}
+.howrow img{height:20px;width:20px;object-fit:contain}
+.howrow span{font-size:13px;margin-right:10px}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px;vertical-align:0}
+.story-hd{text-align:center;padding:14px 0 10px}
+.story-hd img{height:76px}
+.story{padding:16px 22px 4px;font-size:14px;line-height:2}
+.story p{margin-bottom:12px}
+.story rt{font-size:9px;opacity:.75}
+.story .last{margin-top:18px;text-align:center;color:var(--ai);font-weight:700}
+</style>
+</head>
+<body>
+<div id="app" class="app"></div>
+<div id="layer"></div>
+<input type="file" id="importFile" accept=".json,application/json" hidden>
+<script>
+'use strict';
+/* ============ 記録 ============ */
+const KEY = 'risu-cho-v1';
+const IMG = {
+  full:'img/squirrel_full.png', last:'img/squirrel_last.png', empty:'img/squirrel_empty.png',
+  carry:'img/squirrel_carry.png', face:'img/squirrel_face.png',
+  nut:'img/icon.png', hollow:'img/icon-empty.png',
+  burrClosed:'img/chestnut%20burr2.png', burrOpen:'img/chestnut%20burr1.png',
+  basket:'img/basket.png', leaf:'img/leaf.png', three:'img/three%20chestnuts.png',
+  line1:'img/line1.png', line2:'img/line2.png', burrs:'img/chestnut%20burrs.png'
+};
+const CATS = ['supp','daily','food'];
+const CAT = {supp:'サプリ', daily:'日用品', food:'食品'};
+const END = {used:'使い切った', stopped:'途中でやめた', gave:'譲った・捨てた'};
+
+let S = load();
+let todayOverride = null;
+
+function blank(){ return {version:1, shops:[], slots:[], products:[], events:[], ui:{lastTab:'supp'}}; }
+function normalize(d){
+  for (const k of ['shops','slots','products','events']) if (!Array.isArray(d[k])) d[k] = [];
+  if (!d.ui || typeof d.ui !== 'object') d.ui = {};
+  if (!CATS.includes(d.ui.lastTab)) d.ui.lastTab = 'supp';
+  d.version = 1;
+  return d;
+}
+function load(){
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (raw) { const d = JSON.parse(raw); if (d && d.version === 1) return normalize(d); }
+  } catch(e) {}
+  return blank();
+}
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e) { console.warn('save failed', e); } }
+function uid(p){ return p + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+/* ============ 日付（地元の日付の文字列、正午で数える） ============ */
+const pad = n => String(n).padStart(2,'0');
+function ymd(d){ return d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate()); }
+function today(){ return todayOverride || ymd(new Date()); }
+function noon(s){ const [y,m,d] = s.split('-').map(Number); return new Date(y, m-1, d, 12); }
+function diff(a, b){ return Math.round((noon(b) - noon(a)) / 86400000); }
+function md(s){
+  if (!s) return '日付不明';
+  const [y,m,d] = s.split('-').map(Number);
+  return (y !== noon(today()).getFullYear() ? y + '/' : '') + m + '/' + d;
+}
+const avg = a => a.reduce((x,y)=>x+y,0) / a.length;
+
+/* ============ 引き当て ============ */
+const shopById = id => S.shops.find(x => x.id === id);
+const slotById = id => S.slots.find(x => x.id === id);
+const prodById = id => S.products.find(x => x.id === id);
+const shopsSorted = () => [...S.shops].sort((a,b) => (a.order ?? 0) - (b.order ?? 0));
+const activeSlots = () => S.slots.filter(s => !s.archived);
+const slotProducts = id => S.products.filter(p => p.slotId === id);
+function leadOf(slot){ const sh = shopById(slot.homeShopId); return sh ? (+sh.leadDays || 0) : 0; }
+function evSort(a, b){
+  const da = a.date || '', db = b.date || '';
+  if (da !== db) return da < db ? -1 : 1;
+  return (a.createdAt || '') < (b.createdAt || '') ? -1 : 1;
+}
+
+/* ============ 計算（§5） ============ */
+function calc(slot){
+  const ev = S.events.filter(e => e.slotId === slot.id);
+  let spare = 0;
+  for (const e of ev){
+    if (e.type === 'buy' || e.type === 'adjust') spare += (+e.qty || 0);
+    else if (e.type === 'open' && e.fromSpare) spare -= 1;
+  }
+  spare = Math.max(0, spare);
+  const opensAll = ev.filter(e => e.type === 'open');
+  const openById = new Map(opensAll.map(e => [e.id, e]));
+  const finished = new Set(ev.filter(e => e.type === 'finish').map(e => e.openEventId));
+  const opens = opensAll.filter(e => !finished.has(e.id)).sort(evSort);
+
+  // 実績
+  const samples = ev.filter(e => e.type === 'finish' && e.endKind === 'used' && e.date).map(f => {
+    const o = openById.get(f.openEventId);
+    if (!o || !o.date) return null;
+    const days = diff(o.date, f.date);
+    return days > 0 ? {days, productId:o.productId, date:f.date, createdAt:f.createdAt} : null;
+  }).filter(Boolean).sort(evSort);
+  const cur = prodById(slot.currentProductId);
+  let exp = null, src = null;
+  if (samples.length){
+    if (cur && cur.daysPerUnit){
+      const ratios = samples.map(s => { const p = prodById(s.productId); return p && p.daysPerUnit ? s.days / p.daysPerUnit : null; })
+                            .filter(r => r != null).slice(-5);
+      if (ratios.length){ exp = Math.round(avg(ratios) * cur.daysPerUnit); src = '平均'; }
+    }
+    if (exp == null){ exp = Math.round(avg(samples.slice(-5).map(s => s.days))); src = '平均'; }
+  }
+  if (exp == null && slot.estimateDays){ exp = +slot.estimateDays; src = '目安'; }
+  if (exp == null && cur && cur.daysPerUnit){ exp = +cur.daysPerUnit; src = '何日分'; }
+
+  const t = today();
+  const rows = opens.map(o => {
+    const r = {open:o, place:o.place || '', date:o.date, elapsed:null, rem:null, over:false, check:false, ratio:null, unknown:false};
+    if (o.date) r.elapsed = diff(o.date, t);
+    if (!o.date || exp == null){ r.unknown = true; return r; }
+    r.rem = exp - r.elapsed;
+    r.over = r.rem < 0;
+    r.check = r.elapsed > exp * 1.5;
+    r.ratio = Math.max(0, Math.min(1, r.rem / exp));
+    return r;
+  });
+
+  // 置き場が複数ある持ち場は「予備が置き場の数より少ない」で判じる
+  const places = (slot.places || []).filter(Boolean);
+  const multi = places.length >= 2;
+  let short, out, outPlace = '', emptyPlaces = [], need = 0;
+  if (multi){
+    emptyPlaces = places.filter(p => !opens.some(o => (o.place || '') === p));
+    const eff = spare - emptyPlaces.length;      // 空いた置き場は予備で埋める
+    out = eff < 0;
+    if (out) outPlace = emptyPlaces[emptyPlaces.length + eff] || emptyPlaces[0] || '';
+    short = eff < places.length;
+    need = Math.max(0, places.length + emptyPlaces.length - spare);
+  } else {
+    out = opens.length === 0;
+    short = spare === 0;
+    need = short ? 1 : 0;
+  }
+  const known = rows.filter(r => !r.unknown);
+  const minRem = known.length ? Math.min(...known.map(r => r.rem)) : null;
+  const remC = out ? 0 : (minRem == null ? null : Math.max(0, minRem));
+  const rep = known.length ? known.reduce((a,b) => (b.rem < a.rem ? b : a)) : (rows[0] || null);
+  return {spare, opens, rows, exp, src, multi, places, emptyPlaces, short, out, outPlace, need, minRem, remC, rep};
+}
+
+// §5.4 色（切らせないだけ）。切れているものは計測中でも錆色にする
+function colorOf(slot, c){
+  if (slot.weight !== 'keep' || !c.short) return null;
+  if (c.out) return 's';
+  if (c.remC == null) return null;
+  const L = leadOf(slot);
+  if (c.remC <= L) return 's';
+  if (c.remC <= L + 7) return 'k';
+  return null;
+}
+// 状態の一言（覚え書き・品の頁）
+function statusText(slot, c, withNeed){
+  let s;
+  if (c.out) s = (c.multi && c.outPlace ? c.outPlace + ' ' : '') + '切れている';
+  else if (!c.rows.length) s = '開けていない';
+  else {
+    const r = c.rep;
+    const pre = (c.multi || c.rows.length > 1) && r.place ? r.place + ' ' : '';
+    if (r.date === today()) s = pre + '今日開けた';
+    else if (r.unknown) s = '計測中';
+    else if (r.over) s = pre + '見込みを過ぎた';
+    else s = pre + 'あと' + r.rem + '日';
+  }
+  if (withNeed && c.multi && c.short && c.need > 0) s += '・あと' + c.need + 'つ要る';
+  return s;
+}
+// 覚え書きの状態の欄：区切りごとに折り返す
+function statusHtml(slot, c){
+  return statusText(slot, c, true).split('・').map(x => `<span style="white-space:nowrap">${esc(x)}</span>`).join('<br>');
+}
+function urgentList(){
+  const list = [];
+  for (const slot of activeSlots()){
+    const c = calc(slot); const color = colorOf(slot, c);
+    if (color) list.push({slot, c, color});
+  }
+  list.sort((a,b) => (a.color === b.color ? 0 : a.color === 's' ? -1 : 1) || (a.c.out ? -1 : a.c.remC) - (b.c.out ? -1 : b.c.remC) || a.slot.name.localeCompare(b.slot.name, 'ja'));
+  return list;
+}
+
+/* ============ 書き込み・取り消し ============ */
+let undoTimer = null, undoSnap = null;
+function commit(fn, after){
+  const before = JSON.stringify(S);
+  fn();
+  save();
+  sheet = null; renderLayer();
+  if (after) after();
+  render();
+  showUndo(before);
+}
+function showUndo(before){
+  undoSnap = before;
+  clearTimeout(undoTimer);
+  const el = document.getElementById('undo'); if (el) el.remove();
+  const bar = document.createElement('div');
+  bar.id = 'undo'; bar.className = 'undo';
+  bar.innerHTML = '<span>書き込んだ</span><button data-act="undo">取り消す</button>';
+  document.body.appendChild(bar);
+  undoTimer = setTimeout(hideUndo, 6000);
+}
+function hideUndo(){ clearTimeout(undoTimer); undoSnap = null; const el = document.getElementById('undo'); if (el) el.remove(); }
+function doUndo(){
+  if (!undoSnap) return;
+  S = normalize(JSON.parse(undoSnap));
+  save(); hideUndo();
+  if (view.name === 'item' && !slotById(view.slotId)) view = {name:'shelf'};
+  if (view.name === 'edit' && view.slotId && !slotById(view.slotId)) view = {name:'care'};
+  render();
+}
+function showCarry(){
+  const im = document.createElement('img');
+  im.src = IMG.carry; im.className = 'carry'; im.alt = '';
+  document.body.appendChild(im);
+  setTimeout(() => im.remove(), 1250);
+}
+
+/* ============ 画面 ============ */
+let view = {name:'shelf'};
+let sheet = null;
+let help = null;   // 'how' | 'about'
+function go(name, params){ view = Object.assign({name}, params || {}); render(); window.scrollTo(0, 0); }
+
+function render(){
+  let h = '';
+  if (view.name === 'shelf') h = viewShelf();
+  else if (view.name === 'memo') h = viewMemo();
+  else if (view.name === 'care') h = viewCare();
+  else if (view.name === 'item') h = viewItem();
+  else if (view.name === 'edit') h = viewEdit();
+  document.getElementById('app').innerHTML = h + tabsHtml();
+}
+function tabsHtml(){
+  const on = view.name === 'memo' || (view.name === 'item' && view.from === 'memo') ? 'memo'
+           : (view.name === 'care' || view.name === 'edit') ? 'care' : 'shelf';
+  const b = (k, img, label) => `<button class="${on === k ? 'on' : ''}" data-act="tab" data-v="${k}"><img src="${img}" alt="">${label}</button>`;
+  return `<nav class="tabs"><div class="in">${b('shelf', IMG.nut, '棚')}${b('memo', IMG.basket, '覚え書き')}${b('care', IMG.leaf, '手入れ')}</div></nav>`;
+}
+function stockHtml(n){
+  if (n <= 0) return `<span class="stock"><img src="${IMG.hollow}" alt="予備なし"></span>`;
+  let h = '';
+  for (let i = 0; i < Math.min(3, n); i++) h += `<img src="${IMG.nut}" alt="">`;
+  if (n > 3) h += `<span>＋${n - 3}</span>`;
+  return `<span class="stock" aria-label="予備${n}">${h}</span>`;
+}
+const foot = () => `<div class="foot"><img src="${IMG.three}" alt=""></div>`;
+
+/* ----- 棚 ----- */
+function headInfo(){
+  if (!activeSlots().length) return {img:IMG.carry, html:'手入れから、最初の持ち場を登録する。'};
+  const urg = urgentList();
+  if (!urg.length) return {img:IMG.full, html:'蔵は足りている。'};
+  const {slot, c, color} = urg[0];
+  let l1;
+  if (c.out) l1 = (c.multi && c.outPlace ? esc(c.outPlace) + 'の' : '') + esc(slot.name) + 'が<em class="s">切れている</em>。';
+  else {
+    const r = c.rep;
+    const pre = c.multi && r.place ? esc(r.place) + 'の' : '';
+    l1 = pre + esc(slot.name) + (r.over ? 'が<em class="' + color + '">見込みの日数を過ぎた</em>。' : 'が<em class="' + color + '">あと' + r.rem + '日</em>。');
+  }
+  let l2 = c.multi && c.spare > 0 ? '予備が足りない。' : '予備がない。';
+  const L = leadOf(slot);
+  if (color === 's' && !c.out && L > 0) l2 += '届くまで' + L + '日かかる。';
+  return {img: color === 's' ? IMG.empty : IMG.last, html: l1 + '<br>' + l2};
+}
+function shelfRowsFor(slot, c, color){
+  const out = [];
+  const muted = slot.weight !== 'keep' && c.out;
+  const cls = 'crow' + (color ? ' st-' + color : '') + (muted ? ' muted' : '');
+  const name = esc(slot.name);
+  const sub = t => t ? `<span class="sub">${esc(t)}</span>` : '';
+  const subs = slot.subscription ? '<span class="mark">定期便</span>' : '';
+  const stock = stockHtml(c.spare);
+  const rows = [...c.rows].sort((a,b) => (a.unknown - b.unknown) || ((a.rem ?? 0) - (b.rem ?? 0)));
+  for (const r of rows){
+    const label = c.multi ? r.place : (c.rows.length > 1 ? md(r.date) + '開封' : (r.place || ''));
+    let mid, bar = '';
+    if (r.unknown) mid = `<img src="${IMG.burrClosed}" alt="">計測中`;
+    else {
+      mid = (r.check ? `<button class="ask" data-act="ask" data-id="${slot.id}" data-open="${r.open.id}">まだあるか</button>` : '')
+          + (r.over ? '見込みを過ぎた' : 'あと' + r.rem + '日');
+      bar = `<div class="thin"><div style="width:${Math.round(r.ratio * 100)}%"></div></div>`;
+    }
+    out.push(`<div class="${cls}" data-act="item" data-id="${slot.id}" role="button"><div class="cn">${name}${sub(label)}${subs}</div><div class="cd">${mid}</div>${stock}${bar}</div>`);
+  }
+  if (c.multi){
+    for (const p of c.emptyPlaces){
+      const t = (c.out && p === c.outPlace) || c.spare === 0 ? '切れている' : '開けていない';
+      out.push(`<div class="${cls}" data-act="item" data-id="${slot.id}" role="button"><div class="cn">${name}${sub(p)}${subs}</div><div class="cd">${t}</div>${stock}</div>`);
+    }
+  }
+  if (!c.rows.length && !c.multi){
+    out.push(`<div class="${cls}" data-act="item" data-id="${slot.id}" role="button"><div class="cn">${name}${subs}</div><div class="cd">${c.out && c.spare === 0 ? '切れている' : '開けていない'}</div>${stock}</div>`);
+  }
+  return out.join('');
+}
+function viewShelf(){
+  const head = headInfo();
+  const urg = urgentList();
+  const urgIds = new Set(urg.map(u => u.slot.id));
+  const tab = S.ui.lastTab;
+  let h = `<img class="band" src="${IMG.line1}" alt="">
+  <div class="title"><h1>栗鼠の帳</h1><button class="face" data-act="help" aria-label="説明の頁"><img src="${IMG.face}" alt=""></button></div>
+  <div class="keeper"><img src="${head.img}" alt=""><p>${head.html}</p></div>`;
+  if (urg.length){
+    h += `<div class="sec ${urg.some(u => u.color === 's') ? 's' : 'k'}">手を打つもの</div>`;
+    h += urg.map(u => shelfRowsFor(u.slot, u.c, u.color)).join('');
+  }
+  h += `<div class="cats">${CATS.map(k => `<button class="${tab === k ? 'on' : ''}" data-act="cat" data-v="${k}">${CAT[k]}</button>`).join('')}</div>`;
+  const list = activeSlots().filter(s => s.category === tab && !urgIds.has(s.id)).map(slot => {
+    const c = calc(slot);
+    const group = c.out ? 2 : (c.remC == null ? 1 : 0);
+    return {slot, c, group};
+  });
+  list.sort((a,b) => (a.group - b.group) || ((a.c.remC ?? 0) - (b.c.remC ?? 0)) || a.slot.name.localeCompare(b.slot.name, 'ja'));
+  if (!list.length){
+    const n = activeSlots().filter(s => s.category === tab).length;
+    h += `<div class="empty-note">${n ? 'この分類は、手を打つものの所に並んでいる。' : 'この分類の持ち場はまだない。'}</div>`;
+  } else h += list.map(x => shelfRowsFor(x.slot, x.c, colorOf(x.slot, x.c))).join('');
+  return h + foot();
+}
+
+/* ----- 品の頁 ----- */
+function viewItem(){
+  const slot = slotById(view.slotId);
+  if (!slot){ view = {name:'shelf'}; return viewShelf(); }
+  const c = calc(slot);
+  const color = colorOf(slot, c);
+  const cur = prodById(slot.currentProductId);
+  const L = leadOf(slot);
+  const home = shopById(slot.homeShopId);
+  const back = view.from === 'memo' ? '覚え書き' : '棚';
+  let h = `<button class="back" data-act="back">‹ ${back}</button>
+  <div class="item-h"><h2>${esc(slot.name)}</h2>
+    <div class="pd">今の品：${cur ? esc(cur.name) : '―'}</div>
+    <span class="tag ${slot.weight === 'keep' ? 'keep' : 'bridge'}">${slot.weight === 'keep' ? '切らせない' : 'つなげる'}</span>${slot.subscription ? '<span class="mark">定期便</span>' : ''}
+  </div>
+  <div class="btns">
+    <button class="btn" data-act="sheet" data-v="buy"><img src="${IMG.basket}" alt="">買った</button>
+    <button class="btn" data-act="sheet" data-v="open"><img src="${IMG.burrOpen}" alt="">開けた</button>
+    <button class="btn" data-act="sheet" data-v="finish"><img src="${IMG.hollow}" alt="">使い切った</button>
+  </div><div class="units">`;
+  const rows = [...c.rows].sort((a,b) => (a.unknown - b.unknown) || ((a.rem ?? 0) - (b.rem ?? 0)));
+  for (const r of rows){
+    const left = [r.place, md(r.date) + (r.date ? '開封' : '')].filter(Boolean).join('　');
+    let right;
+    if (r.unknown) right = `<img src="${IMG.burrClosed}" alt="">計測中`;
+    else right = (r.check ? `<button class="ask" data-act="ask" data-id="${slot.id}" data-open="${r.open.id}">まだあるか</button>` : '') + (r.over ? '見込みを過ぎた' : 'あと' + r.rem + '日');
+    h += `<div class="unit ${color ? 'st-' + color : ''}"><span>${esc(left)}</span><span class="r">${right}</span></div>`;
+  }
+  for (const p of c.emptyPlaces) h += `<div class="unit"><span>${esc(p)}</span><span class="r">${c.spare === 0 || p === c.outPlace ? '切れている' : '開けていない'}</span></div>`;
+  if (!c.rows.length && !c.multi) h += `<div class="unit"><span>開封中のものはない</span><span class="r">${c.spare ? '予備から開けられる' : ''}</span></div>`;
+  h += `</div>
+  <div class="facts">
+    <div class="fact"><b>${c.spare}</b><span>予備</span></div>
+    <div class="fact"><b>${c.exp == null ? '―' : c.exp + '日'}</b><span>一つで何日</span><small>${c.src || '計測中'}</small></div>
+    <div class="fact"><b>${L}日</b><span>いつもの店まで</span><small>${home ? esc(home.name) : '店未定'}</small></div>
+  </div>
+  <button class="fold pin" data-act="nextbuy"><span>次に買う</span><span class="sw ${slot.nextBuy ? 'on' : ''}"><i></i></span></button>`;
+  // 履歴
+  const evs = S.events.filter(e => e.slotId === slot.id).sort((a,b) => -evSort(a,b));
+  h += foldHtml('hist', '履歴', evs.length + '件', evs.length ? evs.map(e => histRow(e)).join('') : '<div class="plain">まだ何も書いていない。</div>');
+  // 買える所
+  const shops = (slot.shopIds || []).map(shopById).filter(Boolean);
+  h += foldHtml('shops', '買える所', shops.length ? esc(shops[0].name) + (shops.length > 1 ? ' ほか' : '') : '未定',
+    shops.length ? shops.map(s => `<div class="li"><span>${esc(s.name)}${s.id === slot.homeShopId ? '<span class="mark">いつもの店</span>' : ''}</span><span class="v">${+s.leadDays ? '届くまで' + s.leadDays + '日' : 'すぐ買える'}</span></div>`).join('')
+                 : '<div class="plain">買える所はまだ決めていない。</div>');
+  // 品の一覧
+  const prods = slotProducts(slot.id);
+  h += foldHtml('prods', '品の一覧', esc(prods.map(p => p.daysPerUnit ? p.daysPerUnit + '日分' : p.name).join('・')) || 'なし',
+    prods.length ? prods.map(p => `<div class="li"><span>${esc(p.name)}${p.id === slot.currentProductId ? '<span class="mark">今の品</span>' : ''}${p.daysPerUnit ? '<br><span class="v">' + p.daysPerUnit + '日分</span>' : ''}</span>${p.url ? `<a href="${esc(p.url)}" target="_blank" rel="noopener">購入する頁 ›</a>` : ''}</div>`).join('')
+                 : '<div class="plain">品はまだない。</div>');
+  if (slot.memo) h += `<div class="small" style="border-top:1px solid var(--rule);padding-top:10px">覚え書き：${esc(slot.memo)}</div>`;
+  h += `<button class="fold" data-act="edit" data-id="${slot.id}"><span>この持ち場を編む</span><span class="v">›</span></button>`;
+  return h;
+}
+function foldHtml(key, label, val, body){
+  const open = view.folds && view.folds[key] ? ' open' : '';
+  return `<details class="fd" data-fold="${key}"${open}><summary><span>${label}</span><span class="v">${val}</span></summary><div class="fbody">${body}</div></details>`;
+}
+function histRow(e){
+  let what;
+  if (e.type === 'buy'){
+    const p = prodById(e.productId), sh = shopById(e.shopId);
+    what = `<b>買った</b>${p ? esc(p.name) : ''} ×${e.qty}${sh ? '　' + esc(sh.name) : ''}`;
+  } else if (e.type === 'open'){
+    const p = prodById(e.productId);
+    what = `<b>開けた</b>${e.place ? esc(e.place) + '　' : ''}${p ? esc(p.name) : ''}${e.fromSpare ? '' : '（予備から減らさず）'}`;
+  } else if (e.type === 'finish'){
+    const o = S.events.find(x => x.id === e.openEventId);
+    what = `<b>${END[e.endKind] || '終えた'}</b>${o ? (o.place ? esc(o.place) + '　' : '') + md(o.date) + (o.date ? '開封のもの' : '') : ''}`;
+  } else if (e.type === 'adjust'){
+    what = `<b>予備の直し</b>${e.qty > 0 ? '＋' : ''}${e.qty}${e.note ? '　' + esc(e.note) : ''}`;
+  } else what = esc(e.type);
+  return `<div class="hrow"><div class="hl">${what}</div><div class="hr"><input type="date" value="${e.date || ''}" data-act="evdate" data-id="${e.id}" aria-label="日付">${e.date ? '' : '<span class="v" style="font-size:11.5px;color:var(--kuri-soft)">日付不明</span>'}<button class="del" data-act="evdel" data-id="${e.id}">消す</button></div></div>`;
+}
+
+/* ----- 覚え書き ----- */
+function memoBadge(slot, c, L){
+  if (slot.weight === 'keep' && c.short && (c.out || (c.remC != null && c.remC <= L + 14))) return 'k';
+  if (slot.nextBuy) return 'n';
+  if (c.short) return 'z';
+  return null;
+}
+function viewMemo(){
+  const sections = shopsSorted().map(shop => ({shop, rows:[]}));
+  const none = {shop:null, rows:[]};
+  for (const slot of activeSlots()){
+    if (slot.subscription) continue;
+    const c = calc(slot);
+    const ids = (slot.shopIds || []).filter(id => shopById(id));
+    const targets = ids.length ? sections.filter(s => ids.includes(s.shop.id)) : [none];
+    for (const sec of targets){
+      const L = sec.shop ? (+sec.shop.leadDays || 0) : 0;
+      const b = memoBadge(slot, c, L);
+      if (b) sec.rows.push({slot, c, b});
+    }
+  }
+  const rank = {k:0, n:1, z:2};
+  const key = x => x.c.out ? -1 : (x.c.remC == null ? 1e9 : x.c.remC);
+  const all = [...sections, none].filter(s => s.rows.length);
+  let h = `<img class="band2" src="${IMG.line2}" alt="">
+  <div class="hd"><img src="${IMG.empty}" alt=""><div><h1>覚え書き</h1><p>店ごとに、買うものを並べる</p></div></div>`;
+  if (!all.length) return h + `<div class="allgood"><img src="${IMG.full}" alt=""><p>買い足すものはない。</p></div>` + foot();
+  for (const sec of all){
+    sec.rows.sort((a,b) => (rank[a.b] - rank[b.b]) || (key(a) - key(b)) || a.slot.name.localeCompare(b.slot.name, 'ja'));
+    const L = sec.shop ? (+sec.shop.leadDays || 0) : 0;
+    h += `<div class="shop"><b>${sec.shop ? esc(sec.shop.name) : '店未定'}</b><span>${sec.shop ? (L ? '届くまで ' + L + '日' : 'すぐ買える') : ''}</span></div>`;
+    for (const x of sec.rows){
+      const cur = prodById(x.slot.currentProductId);
+      const badge = x.b === 'k' ? '<span class="bd b-k">尽きかけ</span>' : x.b === 'n' ? '<span class="bd b-n">次に買う</span>' : '<span class="bd b-z">予備なし</span>';
+      h += `<div class="mrow${x.slot.weight !== 'keep' ? ' q' : ''}" data-act="item" data-id="${x.slot.id}" data-from="memo" role="button">
+        <div><div class="mn">${esc(x.slot.name)}</div>${cur ? `<div class="mp">${esc(cur.name)}</div>` : ''}${x.slot.memo ? `<div class="mm">${esc(x.slot.memo)}</div>` : ''}</div>
+        ${badge}<span class="md">${statusHtml(x.slot, x.c)}</span></div>`;
+    }
+  }
+  return h + foot();
+}
+
+/* ----- 手入れ ----- */
+function viewCare(){
+  let h = `<img class="band2" src="${IMG.line2}" alt="">
+  <div class="hd"><img src="${IMG.burrs}" alt="" style="height:56px"><div><h1>手入れ</h1><p>持ち場と店を整える</p></div></div>`;
+  if (!S.slots.length && !S.events.length){
+    h += `<div class="seed"><p>品目一覧（10/10時点）から、店九つと持ち場二十六を一度に入れる。初めの一度だけ使う。</p><button class="wide main" data-act="seed" style="width:100%;margin:10px 0 2px">初期の記録を入れる</button></div>`;
+  }
+  h += `<div class="sec">持ち場</div>`;
+  for (const k of CATS){
+    const list = activeSlots().filter(s => s.category === k);
+    if (!list.length) continue;
+    h += `<div class="tier">${CAT[k]}</div>`;
+    h += list.map(s => { const p = prodById(s.currentProductId); return `<div class="crow2" data-act="edit" data-id="${s.id}" role="button"><span>${esc(s.name)}</span><span class="v">${p ? esc(p.name) : ''} ›</span></div>`; }).join('');
+  }
+  h += `<button class="wide" data-act="new-slot">＋ 持ち場を登録する</button>`;
+  const arch = S.slots.filter(s => s.archived);
+  if (arch.length){
+    h += foldHtml('arch', 'しまった持ち場', arch.length + '件', arch.map(s => `<div class="li"><span>${esc(s.name)}</span><button class="ask" data-act="unarchive" data-id="${s.id}">戻す</button></div>`).join(''));
+  }
+  h += `<div class="sec">店</div><div class="small" style="padding-top:0">名・届くまでの日数・並び順（覚え書きの順）。</div>`;
+  const shops = shopsSorted();
+  h += shops.map((s, i) => {
+    const used = S.slots.some(x => (x.shopIds || []).includes(s.id)) || S.events.some(e => e.shopId === s.id);
+    return `<div class="srow"><input type="text" value="${esc(s.name)}" data-shop="${s.id}" data-k="name" aria-label="店の名">
+      <span class="ld"><input type="number" inputmode="numeric" min="0" value="${+s.leadDays || 0}" data-shop="${s.id}" data-k="leadDays" aria-label="届くまでの日数">日</span>
+      <span class="ops"><button data-act="shop-up" data-id="${s.id}" ${i === 0 ? 'disabled' : ''} aria-label="上へ">▲</button><button data-act="shop-down" data-id="${s.id}" ${i === shops.length - 1 ? 'disabled' : ''} aria-label="下へ">▼</button>${used ? '' : `<button class="del" data-act="shop-del" data-id="${s.id}">消す</button>`}</span></div>`;
+  }).join('');
+  h += `<button class="wide" data-act="shop-add">＋ 店を足す</button>`;
+  h += `<div class="sec">控え</div><div class="small" style="padding-top:0">記録はこの端末の中にだけある。時々書き出しておく。</div>
+  <button class="wide" data-act="export">書き出す</button><button class="wide" data-act="import">読み込む</button>`;
+  h += `<div class="sec">説明の頁</div><button class="wide" data-act="help">説明の頁を開く</button>`;
+  return h + foot();
+}
+
+/* ----- 持ち場を編む ----- */
+function draftFrom(slot){
+  if (!slot) return {id:null, name:'', category:S.ui.lastTab || 'supp', weight:'keep', places:[], shopIds:[], homeShopId:'', subscription:false, estimateDays:'', memo:'', currentProductId:'', products:[], removed:[]};
+  return {id:slot.id, name:slot.name, category:slot.category, weight:slot.weight, places:[...(slot.places || [])], shopIds:[...(slot.shopIds || [])],
+    homeShopId:slot.homeShopId || '', subscription:!!slot.subscription, estimateDays:slot.estimateDays || '', memo:slot.memo || '',
+    currentProductId:slot.currentProductId || '', products:slotProducts(slot.id).map(p => ({id:p.id, name:p.name, daysPerUnit:p.daysPerUnit || '', url:p.url || ''})), removed:[]};
+}
+function viewEdit(){
+  const d = view.draft;
+  const seg = (k, opts) => `<span class="seg">${opts.map(([v, l]) => `<button class="${String(d[k]) === String(v) ? 'on' : ''}" data-act="f-set" data-k="${k}" data-v="${v}">${l}</button>`).join('')}</span>`;
+  const backLabel = view.from === 'item' ? '品の頁' : '手入れ';
+  let h = `<button class="back" data-act="back">‹ ${backLabel}</button>
+  <div class="item-h"><h2>${d.id ? '持ち場を編む' : '持ち場を登録する'}</h2></div><div class="form">
+  <div class="field"><span class="k">持ち場の名</span><input type="text" data-f="name" value="${esc(d.name)}" placeholder="例：化粧水"></div>
+  <div class="field"><span class="k">分類</span>${seg('category', CATS.map(k => [k, CAT[k]]))}</div>
+  <div class="field"><span class="k">重み</span>${seg('weight', [['keep','切らせない'],['bridge','つなげる']])}</div>
+  <div class="field"><span class="k">置き場（二つ以上を同時に開ける時だけ）</span><span class="chips">${d.places.map((p, i) => `<span class="chip">${esc(p)}<b data-act="f-place-del" data-i="${i}" role="button" aria-label="外す">×</b></span>`).join('')}</span>
+    <div class="addrow"><input type="text" id="placeNew" placeholder="例：自宅"><button data-act="f-place-add">足す</button></div></div>
+  <div class="field"><span class="k">買える所（押して選ぶ。濃い一つが「いつもの店」）</span><span class="chips">${shopsSorted().map(s => `<button class="${d.shopIds.includes(s.id) ? (s.id === d.homeShopId ? 'home' : 'sel') : ''}" data-act="f-shop" data-id="${s.id}">${esc(s.name)}</button>`).join('') || '<span class="small" style="padding:0">店は手入れの「店」で足す。</span>'}</span>
+    ${d.shopIds.length > 1 ? `<div class="homesel">いつもの店<select data-f="homeShopId">${d.shopIds.map(id => shopById(id)).filter(Boolean).map(s => `<option value="${s.id}" ${s.id === d.homeShopId ? 'selected' : ''}>${esc(s.name)}</option>`).join('')}</select></div>` : ''}</div>
+  <div class="field"><span class="k">定期便</span>${seg('subscription', [['false','なし'],['true','あり']])}</div>
+  <div class="field"><span class="k">品（サプリは何日分かも）</span>`;
+  h += d.products.map((p, i) => `<div class="pbox">
+      <input type="text" data-pf="name" data-i="${i}" value="${esc(p.name)}" placeholder="品の名">
+      <div class="pl"><label>何日分</label><input type="number" inputmode="numeric" min="1" data-pf="daysPerUnit" data-i="${i}" value="${esc(p.daysPerUnit)}" placeholder="任意"></div>
+      <div class="pl"><label>購入する頁</label><input type="url" data-pf="url" data-i="${i}" value="${esc(p.url)}" placeholder="任意"></div>
+      <div class="pt"><button class="cur ${p.id === d.currentProductId ? 'on' : ''}" data-act="f-cur" data-i="${i}">${p.id === d.currentProductId ? '今の品' : '今の品にする'}</button>${productUsed(p.id) ? '' : `<button class="del" data-act="f-pdel" data-i="${i}">外す</button>`}</div></div>`).join('');
+  h += `<div class="addrow"><button data-act="f-padd">＋ 品を足す</button></div></div>
+  <div class="field"><span class="k">一つでおよそ何日（目安・任意）</span><input type="number" inputmode="numeric" min="1" data-f="estimateDays" value="${esc(d.estimateDays)}" placeholder="うろ覚えでよい"></div>
+  <div class="field"><span class="k">覚え書き</span><textarea data-f="memo" placeholder="例：ブラックフライデーで年1回まとめ買い">${esc(d.memo)}</textarea></div>
+  ${view.err ? `<div class="err">${esc(view.err)}</div>` : ''}
+  </div><button class="wide main" data-act="f-save">書き込む</button>`;
+  if (d.id){
+    const hasEv = S.events.some(e => e.slotId === d.id);
+    h += `<div class="danger"><button data-act="archive" data-id="${d.id}">しまう</button>${hasEv ? '' : `<button class="del2" data-act="slot-del" data-id="${d.id}">消す</button>`}</div>
+    <div class="small">しまうと棚と覚え書きから外れる。記録は残り、手入れから戻せる。</div>`;
+  }
+  return h + `<div class="small">店の「届くまでの日数」は、手入れの「店」で決める。</div>` + foot();
+}
+function productUsed(pid){ return S.events.some(e => e.productId === pid); }
+function saveDraft(){
+  const d = view.draft;
+  const name = (d.name || '').trim();
+  if (!name){ view.err = '持ち場の名を入れる。'; render(); return; }
+  view.err = null;
+  let newId = d.id;
+  commit(() => {
+    let slot = d.id ? slotById(d.id) : null;
+    if (!slot){ slot = {id:uid('sl'), createdAt:today(), archived:false, nextBuy:false}; S.slots.push(slot); newId = slot.id; }
+    S.products = S.products.filter(p => !(p.slotId === slot.id && d.removed.includes(p.id)));
+    const keep = [];
+    for (const dp of d.products){
+      const nm = (dp.name || '').trim(); if (!nm) continue;
+      const dpu = parseInt(dp.daysPerUnit, 10);
+      const fields = {name:nm, daysPerUnit: dpu > 0 ? dpu : null, url:(dp.url || '').trim() || null};
+      let p = prodById(dp.id);
+      if (p) Object.assign(p, fields); else { p = Object.assign({id:dp.id, slotId:slot.id}, fields); S.products.push(p); }
+      keep.push(p.id);
+    }
+    const shopIds = d.shopIds.filter(id => shopById(id));
+    const est = parseInt(d.estimateDays, 10);
+    Object.assign(slot, {
+      name, category:d.category, weight:d.weight,
+      places:[...new Set(d.places.map(p => p.trim()).filter(Boolean))],
+      shopIds, homeShopId: shopIds.includes(d.homeShopId) ? d.homeShopId : (shopIds[0] || ''),
+      subscription: d.subscription === true || d.subscription === 'true',
+      estimateDays: est > 0 ? est : null,
+      currentProductId: keep.includes(d.currentProductId) ? d.currentProductId : (keep[0] || ''),
+      memo:(d.memo || '').trim()
+    });
+  }, () => { view = view.from === 'item' ? {name:'item', slotId:newId, from:view.fromItem} : {name:'care'}; window.scrollTo(0,0); });
+}
+
+/* ============ 板 ============ */
+function openSheet(kind, slotId, extra){
+  const slot = slotById(slotId); const c = calc(slot);
+  const t = today();
+  if (kind === 'open'){
+    const lastOpen = S.events.filter(e => e.slotId === slotId && e.type === 'open' && e.place).sort(evSort).pop();
+    const places = (slot.places || []).filter(Boolean);
+    const place = places.length ? (lastOpen && places.includes(lastOpen.place) ? lastOpen.place : places[0]) : '';
+    sheet = {kind, slotId, place, productId:slot.currentProductId || '', date:t};
+  } else if (kind === 'finish'){
+    const rows = [...c.rows].sort((a,b) => (a.unknown - b.unknown) || ((a.rem ?? 0) - (b.rem ?? 0)));
+    sheet = {kind, slotId, openId:(extra && extra.openId) || (rows[0] ? rows[0].open.id : ''), endKind:'used', date:t};
+  } else if (kind === 'buy'){
+    const lastBuy = S.events.filter(e => e.slotId === slotId && e.type === 'buy').sort(evSort).pop();
+    const prods = slotProducts(slotId);
+    let productId = lastBuy && prodById(lastBuy.productId) ? lastBuy.productId : (slot.currentProductId || (prods[0] && prods[0].id) || '__new');
+    let shopId = lastBuy && shopById(lastBuy.shopId) ? lastBuy.shopId : (slot.homeShopId || (slot.shopIds || [])[0] || (shopsSorted()[0] || {}).id || '');
+    sheet = {kind, slotId, productId, shopId, qty:1, date:t, newName:'', newDays:''};
+  }
+  renderLayer();
+}
+function sameOpen(sh){
+  const c = calc(slotById(sh.slotId));
+  return c.opens.filter(o => (o.place || '') === (sh.place || ''))[0] || null;
+}
+function sheetHtml(){
+  if (!sheet) return '';
+  if (sheet.kind === 'confirm'){
+    return `<div class="scrim" data-act="close"></div><div class="sheet" role="dialog"><p style="margin-top:4px">${sheet.text}</p>
+      <div class="choice">${sheet.yes ? `<button class="${sheet.warn ? 'warn' : 'main'}" data-act="confirm-yes">${sheet.yes}</button>` : ''}<button data-act="close">${sheet.no || 'やめる'}</button></div></div>`;
+  }
+  const slot = slotById(sheet.slotId); const c = calc(slot);
+  const dateField = `<div class="field"><span>日付</span><input type="date" data-s="date" value="${sheet.date}" max="${today()}"></div>`;
+  let h = `<div class="scrim" data-act="close"></div><div class="sheet" role="dialog">`;
+  const prods = slotProducts(slot.id);
+  if (sheet.kind === 'open'){
+    h += `<h3><img src="${IMG.burrOpen}" alt="">開けた<span style="font-size:12px;color:var(--kuri-soft);font-weight:400">${esc(slot.name)}</span><button class="x" data-act="close" aria-label="閉じる">×</button></h3>`;
+    const places = (slot.places || []).filter(Boolean);
+    if (places.length) h += `<div class="field"><span>置き場</span><span class="seg">${places.map(p => `<button class="${p === sheet.place ? 'on' : ''}" data-act="s-set" data-k="place" data-v="${esc(p)}">${esc(p)}</button>`).join('')}</span></div>`;
+    h += `<div class="field"><span>品</span><select data-s="productId">${prods.map(p => `<option value="${p.id}" ${p.id === sheet.productId ? 'selected' : ''}>${esc(p.name)}</option>`).join('') || '<option value="">（品なし）</option>'}</select></div>`;
+    h += dateField;
+    const prev = sameOpen(sheet);
+    if (prev){
+      const when = sheet.date === today() ? '今日' : md(sheet.date);
+      h += `<p>${sheet.place ? esc(sheet.place) + 'で' : ''}開けているもの（${prev.date ? md(prev.date) + '開封' : '開封日不明'}）は、${when}で使い切ったことにするか。</p>
+        <div class="choice"><button class="main" data-act="do-open" data-v="1">そうする</button><button data-act="do-open" data-v="0">まだ残っている</button></div>`;
+    } else h += `<div class="choice"><button class="main" data-act="do-open" data-v="0">書き込む</button></div>`;
+    h += `<div class="note">${c.spare > 0 ? '予備から一つ減る。' : '予備がないので、予備の数はそのまま。開けたことだけ書く。'}</div>`;
+  } else if (sheet.kind === 'finish'){
+    h += `<h3><img src="${IMG.hollow}" alt="">使い切った<span style="font-size:12px;color:var(--kuri-soft);font-weight:400">${esc(slot.name)}</span><button class="x" data-act="close" aria-label="閉じる">×</button></h3>`;
+    if (!c.opens.length){
+      h += `<p>開封中のものがない。</p><div class="choice"><button data-act="close">閉じる</button></div>`;
+    } else {
+      if (c.opens.length > 1){
+        h += `<div class="pick">${c.rows.map(r => `<button class="${r.open.id === sheet.openId ? 'on' : ''}" data-act="s-set" data-k="openId" data-v="${r.open.id}">${esc([r.place, r.date ? md(r.date) + '開封' : '開封日不明'].filter(Boolean).join('　'))}${r.unknown ? '' : '　' + (r.over ? '見込みを過ぎた' : 'あと' + r.rem + '日')}</button>`).join('')}</div>`;
+      }
+      h += `<div class="field"><span>終わり方</span><span class="seg">${Object.entries(END).map(([k, l]) => `<button class="${sheet.endKind === k ? 'on' : ''}" data-act="s-set" data-k="endKind" data-v="${k}">${l}</button>`).join('')}</span></div>`;
+      h += dateField;
+      h += `<div class="choice"><button class="main" data-act="do-finish">書き込む</button></div>`;
+      h += `<div class="note">「一つで何日」に入るのは、使い切ったものだけ。</div>`;
+    }
+  } else if (sheet.kind === 'buy'){
+    h += `<h3><img src="${IMG.basket}" alt="">買った<span style="font-size:12px;color:var(--kuri-soft);font-weight:400">${esc(slot.name)}</span><button class="x" data-act="close" aria-label="閉じる">×</button></h3>`;
+    h += `<div class="field"><span>品</span><select data-s="productId">${prods.map(p => `<option value="${p.id}" ${p.id === sheet.productId ? 'selected' : ''}>${esc(p.name)}</option>`).join('')}<option value="__new" ${sheet.productId === '__new' ? 'selected' : ''}>＋ 新しい品</option></select></div>`;
+    if (sheet.productId === '__new'){
+      h += `<div class="newp"><div class="field"><span>名</span><input type="text" data-s="newName" value="${esc(sheet.newName)}" placeholder="例：DHCヘム鉄 90日分"></div>
+        <div class="field" style="border-bottom:none"><span>何日分</span><input type="number" inputmode="numeric" min="1" data-s="newDays" value="${esc(sheet.newDays)}" placeholder="任意"></div></div>`;
+    }
+    const mine = (slot.shopIds || []).map(shopById).filter(Boolean);
+    const others = shopsSorted().filter(s => !(slot.shopIds || []).includes(s.id));
+    h += `<div class="field"><span>店</span><select data-s="shopId">${!S.shops.length ? '<option value="">店未定</option>' : ''}
+      ${mine.length ? `<optgroup label="買える所">${mine.map(s => `<option value="${s.id}" ${s.id === sheet.shopId ? 'selected' : ''}>${esc(s.name)}</option>`).join('')}</optgroup>` : ''}
+      ${others.length ? `<optgroup label="他の店">${others.map(s => `<option value="${s.id}" ${s.id === sheet.shopId ? 'selected' : ''}>${esc(s.name)}</option>`).join('')}</optgroup>` : ''}</select></div>`;
+    h += `<div class="field"><span>数</span><span class="stepper"><button data-act="qty" data-v="-1" aria-label="減らす">－</button><b>${sheet.qty}</b><button data-act="qty" data-v="1" aria-label="増やす">＋</button></span></div>`;
+    h += dateField;
+    if (sheet.err) h += `<div class="err">${esc(sheet.err)}</div>`;
+    h += `<div class="choice"><button class="main" data-act="do-buy">書き込む</button></div>`;
+  }
+  return h + '</div>';
+}
+function renderLayer(){
+  const layer = document.getElementById('layer');
+  layer.innerHTML = (help ? helpHtml() : '') + sheetHtml();
+  document.body.style.overflow = (help || sheet) ? 'hidden' : '';
+}
+function confirmSheet(text, yes, onYes, warn, no){ sheet = {kind:'confirm', text, yes, warn, no}; confirmFn = onYes; renderLayer(); }
+let confirmFn = null;
+
+function doOpen(finishPrev){
+  const sh = sheet; const slot = slotById(sh.slotId); const c = calc(slot);
+  const prev = sameOpen(sh);
+  const date = sh.date || today();
+  commit(() => {
+    const now = new Date().toISOString();
+    if (finishPrev && prev) S.events.push({id:uid('ev'), type:'finish', slotId:slot.id, openEventId:prev.id, date, endKind:'used', createdAt:now});
+    S.events.push({id:uid('ev'), type:'open', slotId:slot.id, productId:sh.productId || null, place:sh.place || null, date, fromSpare:c.spare > 0, createdAt:now});
+  });
+}
+function doFinish(){
+  const sh = sheet; if (!sh.openId) return;
+  commit(() => { S.events.push({id:uid('ev'), type:'finish', slotId:sh.slotId, openEventId:sh.openId, date:sh.date || today(), endKind:sh.endKind, createdAt:new Date().toISOString()}); });
+}
+function doBuy(){
+  const sh = sheet; const slot = slotById(sh.slotId);
+  if (sh.productId === '__new' && !(sh.newName || '').trim()){ sh.err = '新しい品の名を入れる。'; renderLayer(); return; }
+  commit(() => {
+    let pid = sh.productId;
+    if (pid === '__new'){
+      const d = parseInt(sh.newDays, 10);
+      const p = {id:uid('pr'), slotId:slot.id, name:sh.newName.trim(), daysPerUnit: d > 0 ? d : null, url:null};
+      S.products.push(p); pid = p.id;
+    }
+    S.events.push({id:uid('ev'), type:'buy', slotId:slot.id, productId:pid || null, shopId:sh.shopId || null, qty:Math.max(1, sh.qty | 0), date:sh.date || today(), createdAt:new Date().toISOString()});
+    if (pid) slot.currentProductId = pid;
+    slot.nextBuy = false;
+  });
+  showCarry();
+}
+
+/* ============ 説明の頁 ============ */
+function helpHtml(){
+  const tab = help;
+  let h = `<div class="cover" role="dialog"><div class="in">
+  <div class="tabsx"><button class="${tab === 'how' ? 'on' : ''}" data-act="help-tab" data-v="how">使い方</button><button class="${tab === 'about' ? 'on' : ''}" data-act="help-tab" data-v="about">この帳面について</button><button class="x" data-act="help-close" aria-label="閉じる">×</button></div>`;
+  if (tab === 'how'){
+    h += `<div class="how">
+    <h4>持ち場と品</h4>
+    <p>棚に並ぶのは「化粧水」「ヘム鉄」といった<b>持ち場</b>。そこに今入っている製品が<b>品</b>。品を替えても、持ち場の記録は続く。</p>
+    <h4>三つの釦</h4>
+    <div class="howbtn"><img src="${IMG.basket}" alt=""><p><b>買った</b>　予備が一つ増える。店と品は前回のものが入っている。</p></div>
+    <div class="howbtn"><img src="${IMG.burrOpen}" alt=""><p><b>開けた</b>　予備が一つ減り、開けた日を記す。同じ置き場の古いものは、使い切ったか確かめる。</p></div>
+    <div class="howbtn"><img src="${IMG.hollow}" alt=""><p><b>使い切った</b>　終わった日を記す。開けてからの日数が、その持ち場の「一つで何日」になる。</p></div>
+    <h4>棚の印</h4>
+    <div class="howrow"><img src="${IMG.nut}" alt=""><span>予備一つ</span><img src="${IMG.hollow}" alt=""><span>予備なし</span><img src="${IMG.burrClosed}" alt=""><span>計測中</span></div>
+    <p>計測中は、まだ一つも使い切っていない持ち場。目安の日数を入れておけば、それで仮に数える。</p>
+    <h4>色</h4>
+    <p>色が付くのは「切らせない」の持ち場だけ。<br><span class="dot" style="background:var(--karashi)"></span>芥子色：そろそろ買う頃<br><span class="dot" style="background:var(--sabi)"></span>錆色：今頼んでも届く前に尽きる</p>
+    <h4>控え</h4>
+    <p>記録はこの端末の中にだけある。手入れから時々書き出しておく。</p>
+    </div>`;
+  } else {
+    h += `<div class="story-hd"><img src="${IMG.carry}" alt=""></div>
+    <img class="band2" src="${IMG.line2}" alt="">
+    <div class="story">
+      <p>──森の栗鼠は、秋になると実を埋めて回る。</p>
+      <p>樫の根元に一粒、苔の下に一粒、倒木の陰に一粒。ひと秋に何千と埋めて、そのかなりを忘れる。</p>
+      <p>忘れられた実は、春に芽を出す。森はそうやって広がってきた。だから森の者は、栗鼠の物忘れを責めない。</p>
+      <p>ただ、忘れた当の栗鼠は、冬の真ん中で腹を空かせることがある。あるいは、まだ埋めてあるのを忘れて、同じ実をもう一度集めに走る。</p>
+      <p>ある栗鼠が、帳面をつけ始めた。</p>
+      <p>拾った日、開けた日、食べ終えた日。一粒ずつ書いた。</p>
+      <p>書いてみると、分かることがあった。一つの実で何日もつか。どの実が早く尽きるか。遠い谷の実は、取りに行くのに何日かかるか。</p>
+      <p>栗鼠はもう、慌てて走らない。蔵が空く前に、どこへ行けばよいか分かっている。</p>
+      <p>遠い国の言葉で、蔵の鍵を預かり帳面をつける者を<ruby>タミアス<rt>tamias</rt></ruby>という。栗鼠の一族には、今もその名で呼ばれる者たちがいる。</p>
+      <p class="last">覚えておくのは帳面の仕事。<br>栗鼠は、走るだけでよい。</p>
+    </div>`;
+  }
+  return h + foot() + '</div></div>';
+}
+
+/* ============ 控え ============ */
+function doExport(){
+  const name = 'risu-cho_' + today() + '.json';
+  const text = JSON.stringify({app:'risu-cho', version:1, exportedAt:new Date().toISOString(), data:S}, null, 1);
+  const file = new File([text], name, {type:'application/json'});
+  const ios = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && /Macintosh/.test(navigator.userAgent));
+  if (ios && navigator.canShare && navigator.canShare({files:[file]})){
+    navigator.share({files:[file], title:name}).catch(() => {});
+    return;
+  }
+  const url = URL.createObjectURL(file);
+  const a = document.createElement('a'); a.href = url; a.download = name;
+  document.body.appendChild(a); a.click();
+  setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 1500);
+}
+function onImportFile(file){
+  const rd = new FileReader();
+  rd.onload = () => {
+    let obj = null;
+    try { obj = JSON.parse(rd.result); } catch(e) {}
+    if (!obj || obj.app !== 'risu-cho' || obj.version !== 1 || !obj.data || obj.data.version !== 1){
+      confirmSheet('この控えは読み込めない。栗鼠の帳（版1）の控えではない。', null, null, false, '閉じる'); return;
+    }
+    const d = obj.data;
+    const ns = (d.slots || []).length, ne = (d.events || []).length;
+    confirmSheet(`持ち場 ${ns}・出来事 ${ne} の控えである（${esc(String(obj.exportedAt || '').slice(0,10))}）。<br>今の記録を、全部これに置き換えるか。`, '置き換える', () => {
+      commit(() => { S = normalize(JSON.parse(JSON.stringify(d))); }, () => { view = {name:'shelf'}; });
+    }, true);
+  };
+  rd.readAsText(file);
+}
+
+/* ============ 初期の記録（§10） ============ */
+function seed(){
+  const T = today();
+  const now = () => new Date().toISOString();
+  const shopDefs = [['muji','無印良品',0],['ds','ドラッグストア',0],['orbis','オルビス',3],['amz','Amazon',2],['amzx','Amazon（海外マーケットプレイス）',7],['tomiz','富澤商店',3],['kaldi','カルディ',0],['apita','アピタ',0],['clinique','クリニーク',3]];
+  const sid = {};
+  const shops = shopDefs.map(([k, name, lead], i) => { const s = {id:uid('sh'), name, leadDays:lead, order:i + 1}; sid[k] = s.id; return s; });
+  // [名, 分類, 重み, [[品, 何日分]...], [店], 置き場, 開封(日付|null の配列。置き場ありは [置き場,日付]), 予備, 定期便, memo]
+  const defs = [
+    ['ヘム鉄','supp','keep',[['DHCヘム鉄 60日分',60],['DHCヘム鉄 90日分',90]],['ds','amz'],['自宅','職場'],[['自宅','2026-09-06'],['職場','2026-09-06']],0,false,''],
+    ['ハイチオールC','supp','keep',[['ハイチオールCプラスEX 240錠',null]],['amz','ds'],[],[null],0,false,''],
+    ['クエン酸Mg','supp','keep',[['NOW Foods クエン酸マグネシウム 240粒',120]],['amzx'],[],['2026-10-05'],0,false,''],
+    ['ビタミンB','supp','keep',[['DHC ビタミンBミックス 徳用60日分',60]],['amz'],[],['2026-09-09'],1,true,''],
+    ['DHA','supp','keep',[['ディアナチュラ DHA with イチョウ葉 240粒',60]],['amz'],[],['2026-10-08'],0,true,''],
+    ['ソイプロテイン','supp','keep',[['SUNSTYLE PREMIUMソイプロテイン ココア 1.05kg',null]],['ds'],[],[null],0,false,''],
+    ['ふき取りローション','daily','bridge',[['無印 ふき取りローション（詰替）300ml',null]],['muji'],[],['2026-10-10'],0,false,''],
+    ['導入美容液','daily','bridge',[['無印 発酵導入美容液 大容量100ml',null]],['muji'],[],[null],0,false,''],
+    ['泡洗顔（朝）','daily','bridge',[['無印 泡洗顔フォーム（詰替）180ml',null]],['muji'],[],[null],0,false,''],
+    ['スカルプシャンプー','daily','bridge',[['無印 薬用スカルプシャンプー（詰替）340g',null]],['muji'],[],[null],1,false,''],
+    ['スカルプコンディショナー','daily','bridge',[['無印 薬用スカルプコンディショナー（詰替）340g',null]],['muji'],[],[null],1,false,''],
+    ['レチノール美容液','daily','bridge',[['無印 高濃度美容液 レチノール誘導体配合 30ml',null]],['muji'],[],[null],0,false,''],
+    ['ヘアマスク','daily','bridge',[['無印 ヘアマスク 200g',null]],['muji'],[],[null],0,false,''],
+    ['ヘアミルク','daily','bridge',[['オルビス エッセンスインヘアミルク つめかえ用 140g',null]],['orbis','ds'],[],[null],1,false,''],
+    ['化粧水','daily','bridge',[['オルビスユー エッセンスローション 180ml',null]],['orbis','ds'],[],[null],1,false,''],
+    ['乳液','daily','bridge',[['肌ラボ 白潤プレミアム 薬用浸透美白乳液 140ml',null]],['orbis','ds'],[],[null],0,false,''],
+    ['洗顔料（夜）','daily','bridge',[['オルビス ブライト ウォッシュ 120g',null]],['orbis','ds'],[],[null],0,false,''],
+    ['化粧下地','daily','bridge',[['メラノCC ディープデイケアUV乳液（乳液/化粧下地） 50g',null]],['orbis','ds'],[],[null],0,false,''],
+    ['ファンデーション','daily','bridge',[['オルビス タイムレスフィットファンデーションUV 11g（廃版）',null]],['orbis','ds'],[],[null],0,false,''],
+    ['美白美容液','daily','bridge',[['メラノCC 薬用プレミアム美容液 20ml',null]],['ds','amz'],[],[null],0,false,''],
+    ['クリニーク美容液','daily','bridge',[['クリニーク ターンアラウンド セラム 50ml',null]],['clinique'],[],[null],0,false,'ブラックフライデーセールで年1回まとめ買い'],
+    ['育毛促進剤','daily','keep',[['薬用アデノゲン グレイシィ',null]],['ds'],[],[null],0,false,''],
+    ['純ココア','food','keep',[['純ココアパウダー 500g',null]],['tomiz'],[],[null],0,false,''],
+    ['プルーン','food','keep',[['プルーン 500g',null]],['tomiz'],[],[null],1,false,''],
+    ['オートミール','food','keep',[['STYLEONE オートミール 1kg',null]],['apita'],[],[null],0,false,''],
+    ['アーモンド','food','keep',[['素焼きアーモンド 大袋 600g',null]],['kaldi'],[],[null],1,false,'']
+  ];
+  const slots = [], products = [], events = [];
+  for (const [name, category, weight, prods, shopKeys, places, opens, spare, sub, memo] of defs){
+    const slot = {id:uid('sl'), name, category, weight, places, shopIds:shopKeys.map(k => sid[k]), homeShopId:sid[shopKeys[0]] || '',
+      subscription:sub, estimateDays:null, currentProductId:'', nextBuy:false, memo, archived:false, createdAt:T};
+    for (const [pn, dpu] of prods){ const p = {id:uid('pr'), slotId:slot.id, name:pn, daysPerUnit:dpu, url:null}; products.push(p); if (!slot.currentProductId) slot.currentProductId = p.id; }
+    if (spare) events.push({id:uid('ev'), type:'adjust', slotId:slot.id, qty:spare, date:T, note:'初期在庫', createdAt:now()});
+    for (const o of opens){
+      const [place, date] = Array.isArray(o) ? o : [null, o];
+      events.push({id:uid('ev'), type:'open', slotId:slot.id, productId:slot.currentProductId, place, date, fromSpare:false, createdAt:now()});
+    }
+    slots.push(slot);
+  }
+  commit(() => { S.shops = shops; S.slots = slots; S.products = products; S.events = events; }, () => { view = {name:'shelf'}; });
+}
+
+/* ============ 操作 ============ */
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-act]');
+  if (!el) return;
+  const act = el.dataset.act, id = el.dataset.id, v = el.dataset.v;
+  switch (act){
+    case 'tab': go(v); break;
+    case 'cat': S.ui.lastTab = v; save(); render(); break;
+    case 'item': go('item', {slotId:id, from:el.dataset.from || (view.name === 'memo' ? 'memo' : 'shelf'), folds:{}}); break;
+    case 'back':
+      if (view.name === 'item') go(view.from === 'memo' ? 'memo' : 'shelf');
+      else if (view.name === 'edit') { if (view.from === 'item') go('item', {slotId:view.slotId, from:view.fromItem, folds:{}}); else go('care'); }
+      break;
+    case 'ask': openSheet('finish', id, {openId:el.dataset.open}); break;
+    case 'sheet': openSheet(v, view.slotId); break;
+    case 'close': sheet = null; renderLayer(); break;
+    case 's-set': sheet[el.dataset.k] = v; renderLayer(); break;
+    case 'qty': sheet.qty = Math.max(1, sheet.qty + (+v)); renderLayer(); break;
+    case 'do-open': doOpen(v === '1'); break;
+    case 'do-finish': doFinish(); break;
+    case 'do-buy': doBuy(); break;
+    case 'confirm-yes': { const f = confirmFn; confirmFn = null; sheet = null; renderLayer(); if (f) f(); break; }
+    case 'nextbuy': { const s = slotById(view.slotId); commit(() => { s.nextBuy = !s.nextBuy; }); break; }
+    case 'evdel': {
+      const ev = S.events.find(x => x.id === id); if (!ev) break;
+      const linked = ev.type === 'open' ? S.events.filter(x => x.type === 'finish' && x.openEventId === ev.id) : [];
+      confirmSheet('この出来事を消すか。' + (linked.length ? '<br>この開封を終えた記録も、一緒に消える。' : ''), '消す', () => {
+        commit(() => { const ids = new Set([ev.id, ...linked.map(x => x.id)]); S.events = S.events.filter(x => !ids.has(x.id)); });
+      }, true);
+      break;
+    }
+    case 'undo': doUndo(); break;
+    case 'help': help = 'how'; renderLayer(); break;
+    case 'help-tab': help = v; renderLayer(); document.querySelector('.cover').scrollTop = 0; break;
+    case 'help-close': help = null; renderLayer(); break;
+    case 'seed': seed(); break;
+    case 'new-slot': go('edit', {slotId:null, from:'care', draft:draftFrom(null)}); break;
+    case 'edit': {
+      const s = slotById(id);
+      go('edit', {slotId:id, from:view.name === 'item' ? 'item' : 'care', fromItem:view.from, draft:draftFrom(s)});
+      break;
+    }
+    case 'unarchive': { const s = slotById(id); commit(() => { s.archived = false; }); break; }
+    case 'shop-add': {
+      const max = Math.max(0, ...S.shops.map(s => s.order || 0));
+      S.shops.push({id:uid('sh'), name:'新しい店', leadDays:0, order:max + 1}); save(); render();
+      const ins = document.querySelectorAll('.srow input[data-k=name]'); const last = ins[ins.length - 1]; if (last){ last.focus(); last.select(); }
+      break;
+    }
+    case 'shop-up': case 'shop-down': {
+      const list = shopsSorted(); const i = list.findIndex(s => s.id === id); const j = act === 'shop-up' ? i - 1 : i + 1;
+      if (j < 0 || j >= list.length) break;
+      list.forEach((s, k) => s.order = k + 1);
+      const t = list[i].order; list[i].order = list[j].order; list[j].order = t;
+      save(); render(); break;
+    }
+    case 'shop-del': {
+      const s = shopById(id);
+      confirmSheet(`「${esc(s.name)}」を消すか。`, '消す', () => { commit(() => { S.shops = S.shops.filter(x => x.id !== id); }); }, true);
+      break;
+    }
+    case 'export': doExport(); break;
+    case 'import': document.getElementById('importFile').click(); break;
+    // 持ち場を編む
+    case 'f-set': { const d = view.draft; d[el.dataset.k] = el.dataset.k === 'subscription' ? v === 'true' : v; render(); break; }
+    case 'f-place-add': {
+      const inp = document.getElementById('placeNew'); const val = (inp.value || '').trim();
+      if (val && !view.draft.places.includes(val)) view.draft.places.push(val);
+      render(); break;
+    }
+    case 'f-place-del': view.draft.places.splice(+el.dataset.i, 1); render(); break;
+    case 'f-shop': {
+      const d = view.draft;
+      if (d.shopIds.includes(id)){ d.shopIds = d.shopIds.filter(x => x !== id); if (d.homeShopId === id) d.homeShopId = d.shopIds[0] || ''; }
+      else { d.shopIds.push(id); if (!d.homeShopId) d.homeShopId = id; }
+      render(); break;
+    }
+    case 'f-padd': view.draft.products.push({id:uid('pr'), name:'', daysPerUnit:'', url:''}); if (!view.draft.currentProductId) view.draft.currentProductId = view.draft.products[0].id; render(); break;
+    case 'f-pdel': {
+      const d = view.draft; const p = d.products.splice(+el.dataset.i, 1)[0];
+      if (p && prodById(p.id)) d.removed.push(p.id);
+      if (p && d.currentProductId === p.id) d.currentProductId = (d.products[0] || {}).id || '';
+      render(); break;
+    }
+    case 'f-cur': view.draft.currentProductId = view.draft.products[+el.dataset.i].id; render(); break;
+    case 'f-save': saveDraft(); break;
+    case 'archive': {
+      const s = slotById(id);
+      commit(() => { s.archived = true; }, () => { view = {name:'care'}; window.scrollTo(0,0); });
+      break;
+    }
+    case 'slot-del': {
+      const s = slotById(id);
+      confirmSheet(`「${esc(s.name)}」を消すか。品も一緒に消える。`, '消す', () => {
+        commit(() => { S.slots = S.slots.filter(x => x.id !== id); S.products = S.products.filter(p => p.slotId !== id); }, () => { view = {name:'care'}; window.scrollTo(0,0); });
+      }, true);
+      break;
+    }
+  }
+});
+document.addEventListener('input', e => {
+  const t = e.target;
+  if (t.dataset.f && view.draft) view.draft[t.dataset.f] = t.value;
+  else if (t.dataset.pf && view.draft) view.draft.products[+t.dataset.i][t.dataset.pf] = t.value;
+  else if (t.dataset.s && sheet && (t.dataset.s === 'newName' || t.dataset.s === 'newDays')) sheet[t.dataset.s] = t.value;
+});
+document.addEventListener('change', e => {
+  const t = e.target;
+  if (t.dataset.s && sheet){
+    if (t.dataset.s === 'date' && !t.value){ t.value = sheet.date; return; }
+    sheet[t.dataset.s] = t.value;
+    if (t.dataset.s !== 'newName' && t.dataset.s !== 'newDays'){ sheet.err = null; renderLayer(); }
+  } else if (t.dataset.act === 'evdate'){
+    const ev = S.events.find(x => x.id === t.dataset.id); if (!ev) return;
+    const val = t.value || null;
+    if (!val && ev.type !== 'open'){ t.value = ev.date || ''; return; }
+    if (val === (ev.date || null)) return;
+    commit(() => { ev.date = val; });
+  } else if (t.dataset.shop){
+    const s = shopById(t.dataset.shop); if (!s) return;
+    if (t.dataset.k === 'name') s.name = t.value.trim() || s.name;
+    else s.leadDays = Math.max(0, parseInt(t.value, 10) || 0);
+    save();
+  } else if (t.dataset.f === 'homeShopId' && view.draft){ view.draft.homeShopId = t.value; render(); }
+  else if (t.id === 'importFile'){ if (t.files && t.files[0]) onImportFile(t.files[0]); t.value = ''; }
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && e.target.id === 'placeNew'){ e.preventDefault(); document.querySelector('[data-act="f-place-add"]').click(); }
+});
+document.addEventListener('toggle', e => {
+  const d = e.target; if (!(d instanceof HTMLDetailsElement) || !d.dataset.fold) return;
+  view.folds = view.folds || {}; view.folds[d.dataset.fold] = d.open;
+}, true);
+// 日付が変わったら数え直す（開いたまま朝を迎えた時）
+let lastDay = today();
+document.addEventListener('visibilitychange', () => { if (!document.hidden && today() !== lastDay){ lastDay = today(); render(); } });
+setInterval(() => { if (today() !== lastDay){ lastDay = today(); render(); } }, 60000);
+
+render();
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(() => {});
+// 確かめ用の口
+window.RISU = { get S(){ return S; }, calc, colorOf, memoBadge, statusText, setToday(d){ todayOverride = d; render(); }, render };
+</script>
+</body>
+</html>
