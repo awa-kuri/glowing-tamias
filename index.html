@@ -199,6 +199,13 @@ details.fd[open]>summary .v::after{content:" ⌄"}
 .shop{padding:12px 16px 4px;display:flex;justify-content:space-between;align-items:baseline;gap:8px;border-top:2px solid var(--ai);margin-top:10px}
 .shop b{font-size:15px;color:var(--ai);letter-spacing:.06em}
 .shop span{font-size:11.5px;color:var(--kuri-soft);white-space:nowrap}
+.mchips{display:flex;flex-wrap:wrap;gap:6px;padding:2px 16px 10px}
+.mchips button{font-size:12.5px;border:1px solid var(--kuri-soft);border-radius:14px;padding:4px 10px;color:var(--kuri);display:inline-flex;align-items:center;gap:5px;transition:background .2s,color .2s,border-color .2s}
+.mchips button b{font-size:11px;font-weight:700;color:var(--kuri-soft)}
+.mchips button.on{background:var(--ai);border-color:var(--ai);color:var(--ground)}
+.mchips button.on b{color:var(--kinari)}
+.list.mfade{animation:ls-fade .35s ease-out both}
+@keyframes ls-fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 .mrow{display:grid;grid-template-columns:1fr auto minmax(64px,34%);align-items:center;gap:8px;padding:8px 16px;border-bottom:1px dashed var(--rule)}
 .mrow .mn{font-size:14.5px;font-weight:500;line-height:1.45}
 .mrow .mp,.mrow .mm{font-size:11px;color:var(--kuri-soft);line-height:1.5}
@@ -514,6 +521,7 @@ function showCarry(){
 let view = {name:'shelf'};
 let sheet = null;
 let help = null;   // 'how' | 'about'
+let memoShop = 'all';   // 覚え書きの絞り込み：'all' | 店のid | 'none'
 let navDir = 'fade';   // 'fade' | 'fwd' | 'back'
 let catDir = 'from-r';
 function go(name, params, dir){ navDir = dir || 'fade'; view = Object.assign({name}, params || {}); render(); window.scrollTo(0, 0); }
@@ -757,22 +765,34 @@ function viewMemo(){
   const rank = {k:0, n:1, z:2};
   const key = x => x.c.out ? -1 : (x.c.remC == null ? 1e9 : x.c.remC);
   const all = [...sections, none].filter(s => s.rows.length);
+  const secKey = s => s.shop ? s.shop.id : 'none';
+  if (memoShop !== 'all' && !(memoShop === 'none' || shopById(memoShop))) memoShop = 'all';
+  if (!all.length) memoShop = 'all';
+  const picked = memoShop === 'all' ? null : [...sections, none].find(s => secKey(s) === memoShop);
+  const sub = picked ? esc(picked.shop ? picked.shop.name : '店未定') + 'で買うもの' : '店ごとに、買うものを並べる';
   let h = `<img class="band2" src="${IMG.line2}" alt="">
-  <div class="hd"><img src="${IMG.empty}" alt=""><div><h1>覚え書き</h1><p>店ごとに、買うものを並べる</p></div></div>`;
+  <div class="hd"><img src="${IMG.basket}" alt=""><div><h1>覚え書き</h1><p>${sub}</p></div></div>`;
   if (!all.length) return h + `<div class="allgood"><img src="${IMG.full}" alt=""><p>買い足すものはない。</p></div>` + foot();
-  for (const sec of all){
+  // 店の札：載るものがある店だけ（選んでいる店は空になっても残す）
+  const chipSecs = [...sections, none].filter(s => s.rows.length || secKey(s) === memoShop);
+  h += `<div class="mchips"><button class="${memoShop === 'all' ? 'on' : ''}" data-act="memo-shop" data-v="all">すべて</button>`
+     + chipSecs.map(s => `<button class="${memoShop === secKey(s) ? 'on' : ''}" data-act="memo-shop" data-v="${secKey(s)}">${esc(s.shop ? s.shop.name : '店未定')}<b>${s.rows.length}</b></button>`).join('') + '</div>';
+  const shown = picked ? all.filter(s => secKey(s) === memoShop) : all;
+  h += `<div class="list mfade" data-k="memo-${memoShop}">`;
+  if (!shown.length) h += `<div class="allgood"><img src="${IMG.full}" alt=""><p>この店で買うものはない。</p></div>`;
+  for (const sec of shown){
     sec.rows.sort((a,b) => (rank[a.b] - rank[b.b]) || (key(a) - key(b)) || a.slot.name.localeCompare(b.slot.name, 'ja'));
     const L = sec.shop ? (+sec.shop.leadDays || 0) : 0;
     h += `<div class="shop"><b>${sec.shop ? esc(sec.shop.name) : '店未定'}</b><span>${sec.shop ? (L ? '届くまで ' + L + '日' : 'すぐ買える') : ''}</span></div>`;
     for (const x of sec.rows){
       const cur = prodById(x.slot.currentProductId);
-      const badge = x.b === 'k' ? '<span class="bd b-k">尽きかけ</span>' : x.b === 'n' ? '<span class="bd b-n">次に買う</span>' : '<span class="bd b-z">予備なし</span>';
+      const badge = x.b === 'k' ? '<span class="bd b-k">必ず買う</span>' : x.b === 'n' ? '<span class="bd b-n">次に買う</span>' : '<span class="bd b-z">予備なし</span>';
       h += `<div class="mrow${x.slot.weight !== 'keep' ? ' q' : ''}" data-act="item" data-id="${x.slot.id}" data-from="memo" role="button">
         <div><div class="mn">${esc(x.slot.name)}</div>${cur ? `<div class="mp">${esc(cur.name)}</div>` : ''}${x.slot.memo ? `<div class="mm">${esc(x.slot.memo)}</div>` : ''}</div>
         ${badge}<span class="md">${statusHtml(x.slot, x.c)}</span></div>`;
     }
   }
-  return h + foot();
+  return h + '</div>' + foot();
 }
 
 /* ----- 手入れ ----- */
@@ -1142,6 +1162,7 @@ document.addEventListener('click', e => {
   const act = el.dataset.act, id = el.dataset.id, v = el.dataset.v;
   switch (act){
     case 'tab': if (view.name === v) break; go(v); break;
+    case 'memo-shop': if (memoShop === v) break; memoShop = v; render(); window.scrollTo(0, 0); break;
     case 'cat': if (v === S.ui.lastTab) break; catDir = CATS.indexOf(v) > CATS.indexOf(S.ui.lastTab) ? 'from-r' : 'from-l'; S.ui.lastTab = v; save(); render(); break;
     case 'item': go('item', {slotId:id, from:el.dataset.from || (view.name === 'memo' ? 'memo' : 'shelf'), folds:{}}, 'fwd'); break;
     case 'back':
@@ -1270,7 +1291,15 @@ document.addEventListener('toggle', e => {
 }, true);
 // 日付が変わったら数え直す（開いたまま朝を迎えた時）
 let lastDay = today();
-document.addEventListener('visibilitychange', () => { if (!document.hidden && today() !== lastDay){ lastDay = today(); render(); } });
+let hiddenAt = 0;
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden){ hiddenAt = Date.now(); return; }
+  let changed = false;
+  // 三十分以上閉じていたら、覚え書きの絞り込みは「すべて」に戻す（次の買い物で絞ったままにならないように）
+  if (memoShop !== 'all' && hiddenAt && Date.now() - hiddenAt > 30 * 60 * 1000){ memoShop = 'all'; changed = true; }
+  if (today() !== lastDay){ lastDay = today(); changed = true; }
+  if (changed) render();
+});
 setInterval(() => { if (today() !== lastDay){ lastDay = today(); render(); } }, 60000);
 
 if (navigator.standalone || (window.matchMedia && matchMedia('(display-mode: standalone)').matches)) document.documentElement.classList.add('standalone');

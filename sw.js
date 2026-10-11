@@ -1,5 +1,5 @@
 // 栗鼠の帳：帳面・字体・絵を端末に保存し、二度目からは端末の中で開く
-const CACHE = 'risu-cho-v3';
+const CACHE = 'risu-cho-v4';
 const CORE = [
   './', './index.html', './manifest.json', './icon-192.png', './icon-512.png',
   './img/squirrel_full.png', './img/squirrel_last.png', './img/squirrel_empty.png',
