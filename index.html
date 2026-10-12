@@ -286,7 +286,7 @@ details.fd[open]>summary .v::after{content:" ⌄"}
 .howrow img{height:20px;width:20px;object-fit:contain}
 .howrow span{font-size:13px;margin-right:10px}
 .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px;vertical-align:0}
-.story-hd{text-align:center;padding:14px 0 10px}
+.story-hd{text-align:center;padding:30px 0 0}
 .story-hd img{height:76px}
 .story{padding:16px 22px 4px;font-size:14px;line-height:2}
 .story p{margin-bottom:12px}
@@ -579,7 +579,7 @@ function tabsHtml(){
   const on = view.name === 'memo' || (view.name === 'item' && view.from === 'memo') ? 'memo'
            : (view.name === 'care' || view.name === 'edit') ? 'care' : 'shelf';
   const b = (k, img, label) => `<button class="${on === k ? 'on' : ''}" data-act="tab" data-v="${k}"><img src="${img}" alt="">${label}</button>`;
-  return `<nav class="tabs"><div class="in">${b('shelf', IMG.nut, '棚')}${b('memo', IMG.burrs, '覚え書き')}${b('care', IMG.leaf, '手入れ')}</div></nav>`;
+  return `<nav class="tabs"><div class="in">${b('shelf', IMG.face, '棚')}${b('memo', IMG.burrs, '覚え書き')}${b('care', IMG.leaf, '手入れ')}</div></nav>`;
 }
 function stockHtml(n){
   if (n <= 0) return `<span class="stock"><img src="${IMG.hollow}" alt="予備なし"></span>`;
@@ -645,7 +645,7 @@ function viewShelf(){
   const urgIds = new Set(urg.map(u => u.slot.id));
   const tab = S.ui.lastTab;
   let h = `<img class="band" src="${IMG.line1}" alt="">
-  <div class="title"><h1>栗鼠の帳</h1><button class="face" data-act="help" aria-label="説明の頁"><img src="${IMG.face}" alt=""></button></div>
+  <div class="title"><h1>栗鼠の帳</h1><button class="face" data-act="help" aria-label="説明の頁"><img src="${IMG.nut}" alt=""></button></div>
   <div class="keeper"><img src="${head.img}" alt=""><p>${head.html}</p></div>`;
   if (urg.length){
     h += `<div class="sec ${urg.some(u => u.color === 's') ? 's' : 'k'}">手を打つもの</div>`;
@@ -1055,12 +1055,12 @@ function helpHtml(){
     </div>`;
   } else {
     h += `<div class="story-hd"><img src="${IMG.carry}" alt=""></div>
-    <img class="band2" src="${IMG.line2}" alt="">
+
     <div class="story">
       <p>──森の栗鼠は、秋になると実を埋めて回る。</p>
       <p>樫の根元に一粒、苔の下に一粒、倒木の陰に一粒。ひと秋に何千と埋めて、そのかなりを忘れる。</p>
       <p>忘れられた実は、春に芽を出す。森はそうやって広がってきた。だから森の者は、栗鼠の物忘れを責めない。</p>
-      <p>ただ、忘れた当の栗鼠は、冬の真ん中で腹を空かせることがある。あるいは、まだ埋めてあるのを忘れて、同じ実をもう一度集めに走る。</p>
+      <p>忘れた当の栗鼠は、冬の真ん中で腹を空かせることがある。あるいは、まだ埋めてあるのを忘れて、同じ実をもう一度集めに走る。</p>
       <p>ある栗鼠が、帳面をつけ始めた。</p>
       <p>拾った日、開けた日、食べ終えた日。一粒ずつ書いた。</p>
       <p>書いてみると、分かることがあった。一つの実で何日もつか。どの実が早く尽きるか。遠い谷の実は、取りに行くのに何日かかるか。</p>
